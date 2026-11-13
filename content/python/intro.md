@@ -152,3 +152,9 @@ def format_course(course: Course) -> str:
 :::tip 学习建议
 每学一个概念，写一个不超过 30 行的小脚本，并运行它。Python 的交互反馈非常快，先用起来，再追求抽象。
 :::
+
+## 下一步
+
+- [Python 基础语法](/python/syntax.html)
+- [列表、字典与集合](/python/data-structures.html)
+- [函数与模块](/python/functions.html)
