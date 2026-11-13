@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+qa-*.mjs
+playwright-report/
+test-results/
+.vscode/
+.idea/
+__pycache__/
+*.pyc
+data/*.db
+data/*.sqlite

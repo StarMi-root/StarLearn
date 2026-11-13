@@ -1,0 +1,29 @@
+[Unit]
+Description=StarLearn TechLearn static site and AI proxy
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=techlearn
+Group=techlearn
+WorkingDirectory=/opt/techlearn/current
+Environment="SITE_DIR=/opt/techlearn/current/dist"
+Environment="HOST=127.0.0.1"
+Environment="PORT=8080"
+EnvironmentFile=-/etc/techlearn/ai.env
+ExecStart=/usr/bin/python3 /opt/techlearn/current/server/ai_proxy.py
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=15
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/techlearn
+RestrictAddressFamilies=AF_INET AF_INET6
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target

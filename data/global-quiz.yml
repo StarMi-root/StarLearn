@@ -1,0 +1,65 @@
+quizzes:
+  - question: "在 C# 中，下面哪个关键字用于声明一个异步方法？"
+    options:
+      - "async"
+      - "await"
+      - "thread"
+      - "defer"
+    answer: A
+    explain: "`async` 修饰方法，表示方法内部可以使用 `await`；真正的异步工作通常发生在 `await` 的调用处。"
+  - question: "Python 中用于创建虚拟环境的推荐命令是？"
+    options:
+      - "python -m venv .venv"
+      - "python install venv"
+      - "pip env create"
+      - "virtualenv --global"
+    answer: A
+    explain: "`python -m venv .venv` 会在当前目录创建名为 `.venv` 的隔离环境，之后激活并安装依赖。"
+  - question: "Linux 中查看当前目录下所有文件（含隐藏文件）的命令是？"
+    options:
+      - "ls -la"
+      - "ls -r"
+      - "dir -all"
+      - "find ."
+    answer: A
+    explain: "`-l` 使用长格式，`-a` 显示隐藏文件，所以 `ls -la` 是最常用的组合。"
+  - question: "llama.cpp 使用的模型量化文件格式通常是？"
+    options:
+      - "GGUF"
+      - "PSD"
+      - "ISO"
+      - "DOCX"
+    answer: A
+    explain: "GGUF 是 llama.cpp 生态常用的模型文件格式，支持多种量化等级，如 Q4_K_M。"
+  - question: "HTML 中用于描述页面主要内容的语义标签是？"
+    options:
+      - "<main>"
+      - "<div>"
+      - "<span>"
+      - "<center>"
+    answer: A
+    explain: "`<main>` 表示文档的主要内容区域，有利于可访问性与 SEO。`<div>` 只是通用容器。"
+  - question: "Nginx 作为反向代理时，常用哪个指令把请求转发给后端？"
+    options:
+      - "proxy_pass"
+      - "root_pass"
+      - "forward_to"
+      - "upstream_route"
+    answer: A
+    explain: "`proxy_pass http://127.0.0.1:8080;` 会把匹配的请求转发给后端服务。"
+  - question: "SSH 密钥登录中，应该放到服务器 `~/.ssh/authorized_keys` 的是？"
+    options:
+      - "公钥"
+      - "私钥"
+      - "密码"
+      - "known_hosts"
+    answer: A
+    explain: "服务器保存公钥，客户端保留私钥。私钥绝不能上传到服务器或提交到 Git。"
+  - question: "在 React 中，用于保存组件内部状态并触发重新渲染的 Hook 是？"
+    options:
+      - "useState"
+      - "useFetch"
+      - "useRoute"
+      - "useStyle"
+    answer: A
+    explain: "`useState` 返回状态值和更新函数，更新状态会触发组件重新渲染。"

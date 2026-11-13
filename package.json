@@ -1,0 +1,20 @@
+{
+  "name": "techlearn",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "StarLearn - 面向实战的编程、AI 与 Linux 学习站",
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "node scripts/watch.mjs",
+    "serve": "python3 -m http.server 8080 --directory dist",
+    "preview": "python3 server/ai_proxy.py",
+    "check": "node scripts/check-links.mjs"
+  },
+  "dependencies": {
+    "highlight.js": "^11.11.1",
+    "js-yaml": "^4.1.0",
+    "marked": "^15.0.7",
+    "marked-highlight": "^2.2.1"
+  }
+}

@@ -1,0 +1,640 @@
+# StarLearn 课程目录
+# 12 个方向、150 个主题。local 为本地原创教程，url 为官方文档入口。
+# 所有图标来自 Simple Icons（CC0 1.0）与 Lucide（ISC）。
+catalog:
+- group: Python / 数据科学
+  icon: static/img/icons/si-python.svg
+  items:
+  - name: Python3 教程
+    desc: 从语法、函数、面向对象到文件与虚拟环境，建立 Python 编程基础。
+    local: python/index.html
+    icon: static/img/icons/si-python.svg
+  - name: Python 2.x 教程
+    desc: Python 2.x 语法与迁移注意事项，维护旧项目时快速对照。
+    url: https://docs.python.org/2/tutorial/
+    icon: static/img/icons/si-python.svg
+  - name: FastAPI
+    desc: 基于类型注解的现代 Python API 框架，自动生成 OpenAPI 文档。
+    url: https://fastapi.tiangolo.com/tutorial/
+    icon: static/img/icons/si-fastapi.svg
+  - name: Flask
+    desc: 轻量灵活的 Python Web 框架，适合从原型到中小型服务。
+    url: https://flask.palletsprojects.com/en/stable/tutorial/
+    icon: static/img/icons/si-flask.svg
+  - name: Django
+    desc: 自带 ORM、后台与认证的全栈 Web 框架，适合业务系统。
+    url: https://docs.djangoproject.com/en/stable/intro/tutorial01/
+    icon: static/img/icons/si-django.svg
+  - name: NumPy
+    desc: 多维数组、广播与向量化计算，Python 数据科学的基础。
+    url: https://numpy.org/doc/stable/user/absolute_beginners.html
+    icon: static/img/icons/si-numpy.svg
+  - name: Pandas
+    desc: DataFrame 数据清洗、分组、合并与时间序列分析。
+    url: https://pandas.pydata.org/docs/user_guide/10min.html
+    icon: static/img/icons/si-pandas.svg
+  - name: SciPy
+    desc: 科学计算、优化、积分、信号处理与稀疏矩阵工具集。
+    url: https://docs.scipy.org/doc/scipy/tutorial/index.html
+    icon: static/img/icons/si-scipy.svg
+  - name: Matplotlib
+    desc: 用 Python 绘制折线图、柱状图、散点图与出版级图表。
+    url: https://matplotlib.org/stable/users/explain/quick_start.html
+    icon: static/img/icons/lu-chart-line.svg
+  - name: Dash
+    desc: 用 Python 构建交互式数据看板与 Web 分析应用。
+    url: https://dash.plotly.com/tutorial
+    icon: static/img/icons/si-plotly.svg
+  - name: Jupyter Notebook
+    desc: 交互式 Notebook 环境，边写代码边记录实验过程。
+    url: https://docs.jupyter.org/en/latest/
+    icon: static/img/icons/si-jupyter.svg
+  - name: Pillow
+    desc: Python 图像读取、裁剪、缩放、滤镜与批量处理。
+    url: https://pillow.readthedocs.io/en/stable/handbook/tutorial.html
+    icon: static/img/icons/lu-image.svg
+  - name: 量化交易
+    desc: 从行情数据、策略回测到风险控制，用 Python 建立量化研究流程。
+    local: python/quant.html
+    icon: static/img/icons/lu-chart-line.svg
+  - name: R 语言
+    desc: 面向统计分析与可视化的语言，适合数据探索与学术研究。
+    url: https://cran.r-project.org/manuals.html
+    icon: static/img/icons/lu-chart-scatter.svg
+  - name: Julia 语言
+    desc: 兼顾开发效率与高性能的科学计算语言。
+    url: https://docs.julialang.org/en/v1/manual/getting-started/
+    icon: static/img/icons/si-julia.svg
+- group: AI / 智能开发
+  icon: static/img/icons/lu-brain-circuit.svg
+  items:
+  - name: AI Agent（智能体）
+    desc: 理解规划、工具调用、记忆与反馈循环，构建可执行任务的智能体。
+    local: ai/agents.html
+    icon: static/img/icons/lu-bot.svg
+  - name: AI（人工智能）基础
+    desc: 从机器学习、神经网络到生成式 AI，建立完整概念地图。
+    local: ai/intro.html
+    icon: static/img/icons/lu-brain.svg
+  - name: AI 应用案例
+    desc: 文本、图像、视频与办公场景中的 AI 落地案例与提示词实践。
+    url: https://github.com/openai/openai-cookbook
+    icon: static/img/icons/lu-sparkles.svg
+  - name: Codex
+    desc: OpenAI 编程协作工具，从代码生成到多文件任务的工作流。
+    icon: static/img/icons/lu-terminal.svg
+    local: ai/coding-workflow.html
+  - name: Claude Code
+    desc: 在终端中读写代码、运行测试并完成工程任务的 AI 编程助手。
+    icon: static/img/icons/si-claudecode.svg
+    local: ai/coding-workflow.html
+  - name: OpenCode
+    desc: 开源 AI 编程代理与终端工作流，支持多模型与自定义工具。
+    icon: static/img/icons/si-opencode.svg
+    local: ai/coding-workflow.html
+  - name: Vibe Coding
+    desc: 以自然语言描述意图、快速迭代原型的 AI 辅助开发方式。
+    icon: static/img/icons/lu-wand-sparkles.svg
+    local: ai/coding-workflow.html
+  - name: Skills（技能工作流）
+    desc: 把可复用指令、工具和流程封装成技能，构建稳定工作流。
+    icon: static/img/icons/lu-workflow.svg
+    local: ai/coding-workflow.html
+  - name: Ollama
+    desc: 一条命令在本地运行和管理大模型，适合开发与私有部署。
+    url: https://docs.ollama.com/
+    icon: static/img/icons/si-ollama.svg
+  - name: Hermes Agent
+    desc: 面向工具调用与任务执行的 Agent 框架与使用方式。
+    icon: static/img/icons/lu-bot.svg
+    local: ai/coding-workflow.html
+  - name: DeepSeek Harness
+    desc: 围绕 DeepSeek 模型的编程 Agent 运行体系：工具、沙箱与反馈。
+    local: ai/deepseek-harness.html
+    icon: static/img/icons/si-deepseek.svg
+  - name: Pi Agent
+    desc: 轻量级个人 AI Agent 框架，连接模型、工具与本地环境。
+    icon: static/img/icons/lu-bot.svg
+    local: ai/coding-workflow.html
+  - name: AI 数学基础
+    desc: 线性代数、概率统计与微积分，理解模型训练与推理的数学直觉。
+    url: https://mml-book.github.io/
+    icon: static/img/icons/lu-sigma.svg
+  - name: TensorFlow
+    desc: Google 的深度学习框架，覆盖张量计算、训练与部署。
+    url: https://www.tensorflow.org/tutorials
+    icon: static/img/icons/si-tensorflow.svg
+  - name: PyTorch
+    desc: 研究与应用广泛的深度学习框架，动态图与生态完善。
+    url: https://pytorch.org/tutorials/
+    icon: static/img/icons/si-pytorch.svg
+  - name: Scikit-learn
+    desc: 经典机器学习算法库，分类、回归、聚类与模型评估。
+    url: https://scikit-learn.org/stable/getting_started.html
+    icon: static/img/icons/si-scikitlearn.svg
+  - name: 机器学习基础
+    desc: 监督学习、无监督学习、特征工程与模型评估入门。
+    url: https://developers.google.com/machine-learning/crash-course
+    icon: static/img/icons/lu-brain-circuit.svg
+  - name: LangChain
+    desc: 连接模型、工具、检索与记忆，构建 LLM 应用和 Agent。
+    url: https://python.langchain.com/docs/tutorials/
+    icon: static/img/icons/si-langchain.svg
+  - name: 自然语言处理 (NLP)
+    desc: 分词、向量化、文本分类、情感分析与大模型文本处理。
+    url: https://huggingface.co/learn/nlp-course/chapter1/1
+    icon: static/img/icons/si-huggingface.svg
+  - name: OpenCV（计算机视觉）
+    desc: 图像读取、特征检测、目标识别与计算机视觉应用。
+    url: https://docs.opencv.org/4.x/d6/d00/tutorial_py_root.html
+    icon: static/img/icons/si-opencv.svg
+  - name: Selenium
+    desc: 浏览器自动化测试与网页操作，适合端到端测试。
+    url: https://www.selenium.dev/documentation/
+    icon: static/img/icons/si-selenium.svg
+  - name: Playwright
+    desc: 跨浏览器自动化测试框架，支持多语言与可靠等待机制。
+    url: https://playwright.dev/docs/intro
+    icon: static/img/icons/lu-test-tube.svg
+- group: 前端开发
+  icon: static/img/icons/si-html5.svg
+  items:
+  - name: HTML
+    desc: 语义化标签、文档结构、表单与可访问性基础。
+    local: frontend/html.html
+    icon: static/img/icons/si-html5.svg
+  - name: HTML5
+    desc: 语义标签、音视频、Canvas、本地存储与现代浏览器能力。
+    url: https://developer.mozilla.org/en-US/docs/Web/HTML
+    icon: static/img/icons/si-html5.svg
+  - name: CSS
+    desc: 选择器、盒模型、层叠、布局与响应式设计基础。
+    local: frontend/css.html
+    icon: static/img/icons/si-css.svg
+  - name: CSS3
+    desc: 圆角、阴影、渐变、动画、媒体查询与现代布局。
+    url: https://developer.mozilla.org/en-US/docs/Web/CSS
+    icon: static/img/icons/si-css.svg
+  - name: JavaScript
+    desc: 变量、函数、对象、异步、DOM 操作与浏览器 API。
+    local: frontend/javascript.html
+    icon: static/img/icons/si-javascript.svg
+  - name: HTML DOM
+    desc: 用 JavaScript 查找、修改、创建和删除网页元素。
+    url: https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model
+    icon: static/img/icons/lu-braces.svg
+  - name: TypeScript
+    desc: 类型系统、接口、泛型与大型前端项目的工程化基础。
+    local: frontend/typescript.html
+    icon: static/img/icons/si-typescript.svg
+  - name: AJAX
+    desc: 异步请求、局部刷新与前后端数据交互。
+    url: https://developer.mozilla.org/en-US/docs/Web/Guide/AJAX
+    icon: static/img/icons/lu-refresh-cw.svg
+  - name: JSON
+    desc: 轻量数据交换格式、语法、解析与 API 数据传输。
+    url: https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/JSON
+    icon: static/img/icons/si-json.svg
+  - name: Tailwind CSS
+    desc: 原子化 CSS 框架，用工具类快速构建一致界面。
+    url: https://tailwindcss.com/docs/installation/using-vite
+    icon: static/img/icons/si-tailwindcss.svg
+  - name: Bootstrap 4
+    desc: 经典响应式组件库、栅格系统与常用 UI 组件。
+    url: https://getbootstrap.com/docs/4.6/getting-started/introduction/
+    icon: static/img/icons/si-bootstrap.svg
+  - name: Bootstrap 5
+    desc: 不依赖 jQuery 的现代 Bootstrap，响应式布局与组件。
+    url: https://getbootstrap.com/docs/5.3/getting-started/introduction/
+    icon: static/img/icons/si-bootstrap.svg
+  - name: Foundation
+    desc: 面向响应式网站的前端框架与可访问组件。
+    url: https://get.foundation/sites/docs/
+    icon: static/img/icons/lu-layout.svg
+  - name: Vue.js
+    desc: 渐进式 JavaScript 框架，组件、指令与响应式数据。
+    url: https://v2.vuejs.org/v2/guide/
+    icon: static/img/icons/si-vuedotjs.svg
+  - name: Vue3
+    desc: 组合式 API、响应式系统与现代 Vue 工程实践。
+    url: https://vuejs.org/guide/introduction.html
+    icon: static/img/icons/si-vuedotjs.svg
+  - name: React
+    desc: 组件、Props、State、Hooks 与单页应用开发。
+    local: frontend/react.html
+    icon: static/img/icons/si-react.svg
+  - name: Next.js
+    desc: 基于 React 的全栈框架，路由、渲染与部署一体化。
+    url: https://nextjs.org/learn
+    icon: static/img/icons/si-nextdotjs.svg
+  - name: AngularJS
+    desc: 经典 Angular 1.x 框架，双向绑定与依赖注入。
+    url: https://docs.angularjs.org/tutorial
+    icon: static/img/icons/si-angular.svg
+  - name: Angular
+    desc: 基于 TypeScript 的现代 Angular 框架与组件体系。
+    url: https://angular.dev/tutorials
+    icon: static/img/icons/si-angular.svg
+  - name: jQuery
+    desc: 用简洁 API 操作 DOM、处理事件与发送请求。
+    url: https://learn.jquery.com/
+    icon: static/img/icons/si-jquery.svg
+  - name: jQuery UI
+    desc: 基于 jQuery 的交互组件、拖拽、日期选择与主题。
+    url: https://jqueryui.com/
+    icon: static/img/icons/si-jquery.svg
+  - name: jQuery EasyUI
+    desc: 快速搭建后台管理界面的 jQuery 组件库。
+    url: https://www.jeasyui.com/documentation/
+    icon: static/img/icons/lu-layout-dashboard.svg
+  - name: ECharts
+    desc: 百度开源的数据可视化图表库，交互与主题丰富。
+    url: https://echarts.apache.org/handbook/en/get-started/
+    icon: static/img/icons/si-apacheecharts.svg
+  - name: Chart.js
+    desc: 轻量 HTML5 图表库，快速绘制常见统计图。
+    url: https://www.chartjs.org/docs/latest/
+    icon: static/img/icons/si-chartdotjs.svg
+  - name: Highcharts
+    desc: 功能完整的商业图表库，适合仪表盘与数据报告。
+    url: https://www.highcharts.com/docs/index
+    icon: static/img/icons/lu-chart-line.svg
+  - name: Google 地图 API
+    desc: 在网页中嵌入地图、标记、路线与位置服务。
+    url: https://developers.google.com/maps/documentation/javascript/tutorials
+    icon: static/img/icons/si-googlemaps.svg
+  - name: SVG
+    desc: 可缩放矢量图形、路径、动画与图标系统。
+    url: https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial
+    icon: static/img/icons/si-svg.svg
+  - name: Font Awesome
+    desc: 常用图标字体与图标组件，快速提升界面表达。
+    url: https://docs.fontawesome.com/
+    icon: static/img/icons/si-fontawesome.svg
+- group: 后端开发
+  icon: static/img/icons/si-nodedotjs.svg
+  items:
+  - name: Node.js
+    desc: JavaScript 服务端运行时、事件循环、模块与 Web 服务。
+    url: https://nodejs.org/en/learn/getting-started/introduction-to-nodejs
+    icon: static/img/icons/si-nodedotjs.svg
+  - name: Electron
+    desc: 用 Web 技术构建 Windows、macOS 与 Linux 桌面应用。
+    url: https://www.electronjs.org/docs/latest/tutorial/tutorial-first-app
+    icon: static/img/icons/si-electron.svg
+  - name: PHP
+    desc: 经典 Web 后端语言、表单处理、数据库与框架生态。
+    url: https://www.php.net/manual/en/tutorial.php
+    icon: static/img/icons/si-php.svg
+  - name: Java
+    desc: JVM、面向对象、集合、异常与 Spring Boot 后端开发。
+    local: java/index.html
+    icon: static/img/icons/si-openjdk.svg
+  - name: Go
+    desc: 并发模型、标准库与云原生服务开发。
+    url: https://go.dev/tour/
+    icon: static/img/icons/si-go.svg
+  - name: Rust
+    desc: 所有权、借用检查与高性能系统编程。
+    url: https://doc.rust-lang.org/book/
+    icon: static/img/icons/si-rust.svg
+  - name: C#
+    desc: .NET 核心语言，从语法到 ASP.NET Core Web API。
+    local: csharp/index.html
+    icon: static/img/icons/si-dotnet.svg
+  - name: Servlet
+    desc: Java Web 基础、请求响应、会话与过滤器。
+    url: https://jakarta.ee/learn/docs/jakartaee-tutorial/current/web/servlets/servlets.html
+    icon: static/img/icons/lu-server.svg
+  - name: JSP
+    desc: JavaServer Pages 模板、表达式、标签与 Web 应用。
+    url: https://jakarta.ee/specifications/pages/
+    icon: static/img/icons/lu-file-code.svg
+  - name: ASP
+    desc: 经典 ASP 服务端脚本与旧 Web 系统维护。
+    url: https://learn.microsoft.com/en-us/previous-versions/iis/6.0-sdk/ms525174(v=vs.90)
+    icon: static/img/icons/lu-file-code.svg
+  - name: VBScript
+    desc: Windows 脚本与经典 ASP 页面中的 VBScript 语法。
+    url: https://learn.microsoft.com/en-us/previous-versions/t0aew7h6(v=vs.85)
+    icon: static/img/icons/lu-file-code.svg
+  - name: AppML
+    desc: 面向数据驱动 Web 应用的轻量框架。
+    url: https://www.w3schools.com/appml/
+    icon: static/img/icons/lu-boxes.svg
+  - name: Swagger
+    desc: 用 OpenAPI 描述、调试和生成 API 文档。
+    url: https://swagger.io/docs/
+    icon: static/img/icons/si-swagger.svg
+  - name: RESTful API
+    desc: 资源建模、HTTP 方法、状态码与接口设计规范。
+    url: https://developer.mozilla.org/en-US/docs/Glossary/REST
+    icon: static/img/icons/si-openapiinitiative.svg
+  - name: Docker
+    desc: 镜像、容器、网络、数据卷与多服务编排。
+    local: server/docker.html
+    icon: static/img/icons/si-docker.svg
+  - name: Linux
+    desc: 命令行、权限、进程、systemd 与服务器运维。
+    local: linux/index.html
+    icon: static/img/icons/si-linux.svg
+  - name: ZooKeeper
+    desc: 分布式协调、配置管理、命名服务与选主机制。
+    url: https://zookeeper.apache.org/doc/current/
+    icon: static/img/icons/lu-network.svg
+- group: 数据库
+  icon: static/img/icons/si-mysql.svg
+  items:
+  - name: SQL 基础
+    desc: 查询、过滤、排序、聚合、连接与子查询。
+    local: reference/sql.html
+    icon: static/img/icons/lu-database.svg
+  - name: MySQL
+    desc: 关系型数据库、表设计、索引、事务与备份。
+    url: https://dev.mysql.com/doc/refman/8.4/en/tutorial.html
+    icon: static/img/icons/si-mysql.svg
+  - name: PostgreSQL
+    desc: 功能强大的开源关系数据库，JSON、扩展与高级查询。
+    url: https://www.postgresql.org/docs/current/tutorial.html
+    icon: static/img/icons/si-postgresql.svg
+  - name: SQLite
+    desc: 零配置嵌入式数据库，适合本地应用与小型服务。
+    url: https://www.sqlite.org/lang.html
+    icon: static/img/icons/si-sqlite.svg
+  - name: MongoDB
+    desc: 文档型 NoSQL 数据库、集合、索引与聚合管道。
+    url: https://www.mongodb.com/docs/manual/tutorial/
+    icon: static/img/icons/si-mongodb.svg
+  - name: Redis
+    desc: 内存键值数据库、缓存、分布式锁与消息队列。
+    url: https://redis.io/docs/latest/develop/
+    icon: static/img/icons/si-redis.svg
+  - name: Memcached
+    desc: 高性能分布式内存缓存，加速热点数据读取。
+    url: https://github.com/memcached/memcached/wiki
+    icon: static/img/icons/lu-database.svg
+- group: 移动开发
+  icon: static/img/icons/si-android.svg
+  items:
+  - name: Android 开发
+    desc: Android 应用结构、Activity、布局与 Kotlin 开发入门。
+    url: https://developer.android.com/codelabs/basic-android-kotlin-compose-first-app
+    icon: static/img/icons/si-android.svg
+  - name: Flutter
+    desc: Dart 与 Flutter 跨平台 UI，一套代码构建多端应用。
+    url: https://docs.flutter.dev/get-started/codelab
+    icon: static/img/icons/si-flutter.svg
+  - name: Ionic
+    desc: 用 Web 技术构建混合移动应用与 PWA。
+    url: https://ionicframework.com/docs
+    icon: static/img/icons/si-ionic.svg
+  - name: jQuery Mobile
+    desc: 面向移动浏览器的页面、导航与触控组件。
+    url: https://jquerymobile.com/
+    icon: static/img/icons/lu-smartphone.svg
+  - name: Swift（iOS）
+    desc: Apple 平台 Swift 语言与 iOS 应用开发基础。
+    url: https://developer.apple.com/tutorials/swiftui
+    icon: static/img/icons/si-swift.svg
+  - name: Kotlin（Android）
+    desc: Android 官方语言 Kotlin 的语法、协程与工程实践。
+    url: https://kotlinlang.org/docs/getting-started.html
+    icon: static/img/icons/si-kotlin.svg
+- group: DevOps / 工程化
+  icon: static/img/icons/si-git.svg
+  items:
+  - name: Git
+    desc: 版本控制、分支、合并、冲突解决与团队协作。
+    local: reference/git.html
+    icon: static/img/icons/si-git.svg
+  - name: SVN
+    desc: 集中式版本控制、检出、提交、分支与旧项目协作。
+    url: https://subversion.apache.org/docs/
+    icon: static/img/icons/si-subversion.svg
+  - name: CMake
+    desc: 跨平台 C/C++ 构建系统、目标与依赖管理。
+    url: https://cmake.org/cmake/help/latest/guide/tutorial/
+    icon: static/img/icons/si-cmake.svg
+  - name: Maven
+    desc: Java 项目构建、依赖管理、生命周期与多模块。
+    url: https://maven.apache.org/guides/getting-started/
+    icon: static/img/icons/si-apachemaven.svg
+  - name: VS Code
+    desc: 轻量编辑器、扩展、调试与远程开发工作流。
+    url: https://code.visualstudio.com/docs
+    icon: static/img/icons/lu-code.svg
+  - name: PyCharm
+    desc: Python IDE、调试、虚拟环境与重构工具。
+    url: https://www.jetbrains.com/help/pycharm/quick-start-guide.html
+    icon: static/img/icons/si-pycharm.svg
+  - name: Eclipse
+    desc: Java IDE、项目结构、调试与插件生态。
+    url: https://www.eclipse.org/documentation/
+    icon: static/img/icons/si-eclipseide.svg
+  - name: Obsidian
+    desc: 本地 Markdown 笔记、双链、知识图谱与插件。
+    url: https://help.obsidian.md/
+    icon: static/img/icons/si-obsidian.svg
+  - name: Markdown
+    desc: 标题、列表、代码块、表格、链接与文档排版。
+    local: reference/markdown.html
+    icon: static/img/icons/si-markdown.svg
+  - name: LaTeX
+    desc: 学术论文排版、数学公式、图表与参考文献管理。
+    url: https://www.latex-project.org/help/documentation/
+    icon: static/img/icons/si-latex.svg
+- group: 编程语言
+  icon: static/img/icons/si-cplusplus.svg
+  items:
+  - name: C 语言
+    desc: 指针、结构体、内存管理与系统级编程基础。
+    url: https://en.cppreference.com/w/c/language
+    icon: static/img/icons/si-c.svg
+  - name: C++
+    desc: 面向对象、STL、模板与高性能程序设计。
+    url: https://en.cppreference.com/w/cpp/language
+    icon: static/img/icons/si-cplusplus.svg
+  - name: Zig
+    desc: 强调显式内存管理与可预测性能的现代系统语言。
+    url: https://ziglang.org/learn/
+    icon: static/img/icons/si-zig.svg
+  - name: Scala
+    desc: 函数式与面向对象融合的 JVM 语言。
+    url: https://docs.scala-lang.org/tour/tour-of-scala.html
+    icon: static/img/icons/si-scala.svg
+  - name: Ruby
+    desc: 优雅简洁的脚本语言与 Rails 生态。
+    url: https://www.ruby-lang.org/en/documentation/quickstart/
+    icon: static/img/icons/si-ruby.svg
+  - name: Perl
+    desc: 文本处理、正则表达式与系统管理脚本。
+    url: https://perldoc.perl.org/perlintro
+    icon: static/img/icons/si-perl.svg
+  - name: Lua
+    desc: 轻量嵌入式脚本语言，游戏与配置场景常用。
+    url: https://www.lua.org/manual/5.4/
+    icon: static/img/icons/si-lua.svg
+  - name: Dart
+    desc: Flutter 使用的客户端语言，异步与面向对象。
+    url: https://dart.dev/language
+    icon: static/img/icons/si-dart.svg
+  - name: 汇编语言
+    desc: 寄存器、指令集、内存寻址与底层程序分析。
+    url: https://en.wikibooks.org/wiki/X86_Assembly
+    icon: static/img/icons/lu-cpu.svg
+  - name: Verilog
+    desc: 数字电路建模、时序逻辑与硬件描述语言入门。
+    url: https://www.chipverify.com/verilog/verilog-tutorial
+    icon: static/img/icons/lu-circuit-board.svg
+- group: 计算机基础
+  icon: static/img/icons/si-thealgorithms.svg
+  items:
+  - name: 计算机组成原理
+    desc: CPU、存储层次、总线、指令系统与程序运行原理。
+    local: hardware/architecture.html
+    icon: static/img/icons/lu-cpu.svg
+  - name: 数据结构与算法
+    desc: 数组、链表、树、图、排序、查找与复杂度分析。
+    url: https://opendatastructures.org/
+    icon: static/img/icons/si-thealgorithms.svg
+  - name: C 语言数据结构与算法
+    desc: 用 C 语言实现常见数据结构与算法，强化指针与内存理解。
+    url: https://github.com/TheAlgorithms/C
+    icon: static/img/icons/si-c.svg
+  - name: 设计模式
+    desc: 创建型、结构型、行为型模式与可维护代码设计。
+    url: https://refactoring.guru/design-patterns
+    icon: static/img/icons/lu-puzzle.svg
+  - name: Python 设计模式
+    desc: 用 Python 实现常见设计模式与工程化写法。
+    url: https://python-patterns.guide/
+    icon: static/img/icons/si-python.svg
+  - name: 正则表达式
+    desc: 元字符、分组、断言、替换与常见文本匹配。
+    local: reference/regex.html
+    icon: static/img/icons/lu-regex.svg
+  - name: HTTP
+    desc: 请求响应、方法、状态码、缓存与 HTTPS 基础。
+    local: reference/http.html
+    icon: static/img/icons/lu-globe.svg
+  - name: TCP/IP
+    desc: 网络分层、IP、TCP/UDP、端口与抓包分析基础。
+    url: https://www.rfc-editor.org/rfc/rfc1180
+    icon: static/img/icons/lu-network.svg
+  - name: 网络协议基础
+    desc: OSI 与 TCP/IP 模型、DNS、HTTP、TLS 与排障思路。
+    local: hardware/network.html
+    icon: static/img/icons/lu-network.svg
+  - name: W3C 标准
+    desc: HTML、CSS、DOM、Web 无障碍与标准演进。
+    url: https://www.w3.org/standards/
+    icon: static/img/icons/lu-globe.svg
+- group: XML / Web Service
+  icon: static/img/icons/si-xml.svg
+  items:
+  - name: XML
+    desc: 标签、元素、属性、命名空间与文档结构。
+    url: https://www.w3.org/XML/
+    icon: static/img/icons/si-xml.svg
+  - name: DTD
+    desc: 文档类型定义、元素声明与 XML 结构约束。
+    url: https://www.w3.org/TR/xml/#dt-doctype
+    icon: static/img/icons/lu-file-check.svg
+  - name: XML DOM
+    desc: 用 DOM API 解析、遍历和修改 XML 文档。
+    url: https://www.w3.org/TR/DOM-Level-3-Core/
+    icon: static/img/icons/lu-braces.svg
+  - name: XSLT
+    desc: XML 转换、模板匹配与结果树生成。
+    url: https://www.w3.org/TR/xslt-30/
+    icon: static/img/icons/lu-repeat.svg
+  - name: XPath
+    desc: 节点路径、谓词、轴与 XML 查询表达式。
+    url: https://www.w3.org/TR/xpath-31/
+    icon: static/img/icons/lu-route.svg
+  - name: XQuery
+    desc: 面向 XML 数据的查询语言与 FLWOR 表达式。
+    url: https://www.w3.org/TR/xquery-31/
+    icon: static/img/icons/lu-search.svg
+  - name: XLink
+    desc: XML 文档中的超链接、链接类型与语义。
+    url: https://www.w3.org/TR/xlink/
+    icon: static/img/icons/lu-link.svg
+  - name: XPointer
+    desc: 定位 XML 文档内部片段与节点范围。
+    url: https://www.w3.org/TR/xptr-framework/
+    icon: static/img/icons/lu-map-pin.svg
+  - name: XML Schema
+    desc: 用 XSD 定义 XML 类型、结构与约束。
+    url: https://www.w3.org/TR/xmlschema-0/
+    icon: static/img/icons/lu-list-checks.svg
+  - name: XSL-FO
+    desc: XML 格式化对象与 PDF/打印排版。
+    url: https://www.w3.org/TR/xsl11/
+    icon: static/img/icons/lu-file-text.svg
+  - name: Web Service
+    desc: 跨系统服务、接口契约与松耦合集成。
+    url: https://www.w3.org/TR/ws-arch/
+    icon: static/img/icons/lu-cloud.svg
+  - name: WSDL
+    desc: 用 WSDL 描述 Web Service 接口、操作与消息。
+    url: https://www.w3.org/TR/wsdl20/
+    icon: static/img/icons/lu-file-json.svg
+  - name: SOAP
+    desc: 基于 XML 的消息协议、信封、头部与错误处理。
+    url: https://www.w3.org/TR/soap12-part1/
+    icon: static/img/icons/lu-mail.svg
+  - name: RSS
+    desc: 订阅源格式、频道、条目与内容聚合。
+    url: https://www.rssboard.org/rss-specification
+    icon: static/img/icons/si-rss.svg
+  - name: RDF
+    desc: 资源描述框架、三元组与语义网数据模型。
+    url: https://www.w3.org/RDF/
+    icon: static/img/icons/lu-share-2.svg
+- group: .NET 生态
+  icon: static/img/icons/si-dotnet.svg
+  items:
+  - name: ASP.NET
+    desc: ASP.NET Core Web 应用、路由、中间件与 API。
+    local: csharp/aspnet.html
+    icon: static/img/icons/si-dotnet.svg
+  - name: MVC 架构
+    desc: Model、View、Controller 分层与 ASP.NET MVC 工作流。
+    url: https://learn.microsoft.com/en-us/aspnet/core/mvc/overview
+    icon: static/img/icons/lu-layers.svg
+  - name: Razor 模板引擎
+    desc: Razor 语法、布局、分部视图与页面渲染。
+    url: https://learn.microsoft.com/en-us/aspnet/core/razor-pages/
+    icon: static/img/icons/si-dotnet.svg
+  - name: Web Forms
+    desc: ASP.NET Web Forms 事件模型、控件与服务器端页面。
+    url: https://learn.microsoft.com/en-us/aspnet/web-forms/
+    icon: static/img/icons/lu-panel-top.svg
+  - name: Web Pages
+    desc: 轻量 ASP.NET Web Pages 与 Razor 页面开发。
+    url: https://learn.microsoft.com/en-us/aspnet/web-pages/overview/getting-started/introducing-razor-syntax-c
+    icon: static/img/icons/lu-file-code.svg
+  - name: PowerShell
+    desc: Windows 自动化、对象管道、脚本与任务调度。
+    url: https://learn.microsoft.com/en-us/powershell/scripting/learn/ps101/00-introduction
+    icon: static/img/icons/lu-terminal.svg
+- group: 网站建设
+  icon: static/img/icons/lu-globe.svg
+  items:
+  - name: 网站建设指南
+    desc: 从域名、主机、页面结构到发布上线的完整流程。
+    url: https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Environment_setup
+    icon: static/img/icons/lu-globe.svg
+  - name: 浏览器信息
+    desc: 主流浏览器、内核、兼容性与调试工具概览。
+    url: https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent
+    icon: static/img/icons/si-googlechrome.svg
+  - name: 网站主机教程
+    desc: 虚拟主机、云服务器、DNS、备案与运维基础。
+    url: https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Your_first_website/Publishing_your_website
+    icon: static/img/icons/lu-server.svg
+  - name: 网站品质
+    desc: 可访问性、性能、SEO、安全与内容质量评估。
+    url: https://web.dev/learn/performance/
+    icon: static/img/icons/si-lighthouse.svg

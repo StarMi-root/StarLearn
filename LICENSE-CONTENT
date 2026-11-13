@@ -1,0 +1,43 @@
+# 教程内容许可 / Content License
+
+Copyright (c) 2026 星米StarMi (StarLearn / 星学)
+
+本仓库 `content/`、`md/` 目录下的原创教程文字、图表、练习题及由这些内容生成的页面，采用
+**Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+（CC BY-NC-SA 4.0，署名—非商业性使用—相同方式共享 4.0 国际）** 许可。
+
+You are free to:
+
+- **Share** — copy and redistribute the material in any medium or format.
+- **Adapt** — remix, transform, and build upon the material.
+
+Under the following terms:
+
+- **Attribution** — You must give appropriate credit to StarLearn / 星米StarMi,
+  provide a link to the license, and indicate if changes were made.
+- **NonCommercial** — You may not use the material for commercial purposes.
+- **ShareAlike** — If you remix, transform, or build upon the material, you must
+  distribute your contributions under the same license as the original.
+- **No additional restrictions** — You may not apply legal terms or
+  technological measures that legally restrict others from doing anything the
+  license permits.
+
+完整法律文本 / Full legal code:
+
+- 中文：https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.zh-hans
+- English: https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
+
+建议署名格式：
+
+```text
+来源：StarLearn（星学）· 星米StarMi
+链接：<原文章或仓库地址>
+许可：CC BY-NC-SA 4.0
+```
+
+说明：
+
+1. 本许可适用于原创教程内容；站点源代码使用根目录 [`LICENSE`](LICENSE) 中的 MIT 许可。
+2. 文章中的代码示例可连同其所在段落按 CC BY-NC-SA 4.0 使用；单独提取的代码片段也可按 MIT 许可使用。
+3. 第三方图标、依赖和商标不包含在本许可中，详见 [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)。
+4. 商业授权、转载整站或定制开发请联系 wB251046886@163.com。

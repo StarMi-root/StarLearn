@@ -1,0 +1,362 @@
+site:
+  name: StarLearn
+  latin: 星学
+  tagline: 从第一行代码，到独立部署上线
+  description: StarLearn（星学）是星米StarMi 开发的实战型中文技术学习站，覆盖 Python/数据科学、AI 智能开发、前端、后端、数据库、移动开发、DevOps、编程语言、计算机基础、XML、.NET 与网站建设。全部教程可下载 Markdown，内置全文搜索、练习与 AI 学习助手。
+  keywords: StarLearn, 星学, 星米StarMi, Python, 数据科学, AI Agent, FastAPI, React, Java, 数据库, Docker, Linux, 编程教程
+  author: 星米StarMi
+  developer: 星米StarMi
+  email: wB251046886@163.com
+  bilibili: 星米StarMi
+  bilibili_url: https://search.bilibili.com/all?keyword=%E6%98%9F%E7%B1%B3StarMi
+  icon: static/img/brand/starlearn-192.png
+  icon_source: 1790907212681.jpg
+  favicon: static/img/brand/favicon.ico
+  touch_icon: static/img/brand/starlearn-180.png
+  repo: ""
+  license: CC BY-NC-SA 4.0（原创文字）
+  since: 2026
+
+categories:
+  - slug: csharp
+    name: C# 教程
+    short: C#
+    badge: "C#"
+    color: "#2563eb"
+    gradient: "linear-gradient(135deg,#1e3a8a,#3b82f6)"
+    description: 从语法、面向对象到 LINQ、异步与 ASP.NET Core，用现代 .NET 构建可靠应用。
+    intro: C# 是 .NET 平台的核心语言，兼具开发效率与运行性能。本路线以 .NET 8/9 为基准，从控制台程序一路走到 Web API。
+    tags: [".NET", "面向对象", "LINQ", "ASP.NET Core"]
+    order: 1
+    featured: true
+    icon: static/img/icons/si-dotnet.svg
+    project: projects/task-manager.html
+  - slug: avalonia
+    name: Avalonia 跨平台 UI
+    short: Avalonia
+    badge: "A"
+    color: "#0ea5e9"
+    gradient: "linear-gradient(135deg,#0369a1,#38bdf8)"
+    description: 用 C# 和 XAML 开发 Windows、Linux、macOS 桌面应用，掌握 MVVM 与发布流程。
+    intro: Avalonia 是成熟的 .NET 跨平台 UI 框架。你会从零搭建项目，理解 XAML、数据绑定、样式与 MVVM，最终打包发布。
+    tags: ["XAML", "MVVM", "跨平台", ".NET"]
+    order: 2
+    featured: true
+    badge_only: true
+    icon: static/img/icons/si-avaloniaui.svg
+    project: projects/notes-app.html
+  - slug: python
+    name: Python 教程
+    short: Python
+    badge: "Py"
+    color: "#1d4ed8"
+    gradient: "linear-gradient(135deg,#1e3a8a,#60a5fa)"
+    description: 从零基础语法到函数、面向对象、文件处理与虚拟环境，打好自动化与 AI 开发基础。
+    intro: Python 语法清晰、生态庞大，是自动化、数据分析与 AI 开发的首选语言。本路线强调动手写、及时练。
+    tags: ["基础语法", "自动化", "虚拟环境", "AI"]
+    order: 3
+    featured: true
+    icon: static/img/icons/si-python.svg
+    project: projects/python-cli.html
+  - slug: java
+    name: Java 教程
+    short: Java
+    badge: "J"
+    color: "#dc2626"
+    gradient: "linear-gradient(135deg,#991b1b,#f87171)"
+    description: 掌握 Java 语法、面向对象、集合、异常与 Spring Boot，进入企业级后端开发。
+    intro: Java 拥有稳定的运行时与庞大的企业生态。本路线从语言基础开始，最后完成一个可运行的 Spring Boot API。
+    tags: ["JVM", "Spring Boot", "后端", "集合"]
+    order: 4
+    featured: true
+    icon: static/img/icons/si-openjdk.svg
+    project: projects/java-api.html
+  - slug: frontend
+    name: 前端开发
+    short: 前端
+    badge: "FE"
+    color: "#e11d48"
+    gradient: "linear-gradient(135deg,#be123c,#fb7185)"
+    description: HTML、CSS、JavaScript、TypeScript、React 与响应式设计，构建真正可用的网页。
+    intro: 前端是离用户最近的一层。你将学会语义化结构、现代布局、交互脚本、类型系统与组件化开发。
+    tags: ["HTML", "CSS", "JavaScript", "React"]
+    order: 5
+    featured: true
+    icon: static/img/icons/si-html5.svg
+    project: projects/local-ai-chat.html
+  - slug: ai
+    name: AI 与本地大模型
+    short: AI
+    badge: "AI"
+    color: "#7c3aed"
+    gradient: "linear-gradient(135deg,#4c1d95,#ef4444)"
+    description: 理解大模型原理，动手运行 llama.cpp、量化模型，认识 DeepSeek Harness 与 AI 编程工作流。
+    intro: 不只会调用 API。本路线带你看清推理、量化、RAG 与 Agent 工作流，把模型真正跑在自己的机器和服务器上。
+    tags: ["llama.cpp", "DeepSeek Harness", "量化", "RAG"]
+    order: 6
+    featured: true
+    badge_only: true
+    icon: static/img/icons/lu-brain-circuit.svg
+    project: projects/local-ai-chat.html
+  - slug: linux
+    name: Linux 教程
+    short: Linux
+    badge: "LX"
+    color: "#1d4ed8"
+    gradient: "linear-gradient(135deg,#1e40af,#38bdf8)"
+    description: 从命令行、文件系统与权限，到进程、systemd、软件包和 Shell 脚本，真正用好服务器。
+    intro: Linux 是服务器世界的工作语言。按“会看、会改、会查、会自动化”的顺序，建立可迁移的命令行能力。
+    tags: ["命令行", "权限", "systemd", "Shell"]
+    order: 7
+    featured: true
+    icon: static/img/icons/si-linux.svg
+    project: server/setup.html
+  - slug: server
+    name: 服务器与部署
+    short: 部署
+    badge: "SRV"
+    color: "#0369a1"
+    gradient: "linear-gradient(135deg,#075985,#38bdf8)"
+    description: Linux 服务器初始化、Nginx、Docker、HTTPS、GitHub Pages、CI/CD 与监控，完整走通上线流程。
+    intro: 代码写完只是开始。本路线把域名、反向代理、证书、容器、自动发布和监控串成一条可复用的部署流水线。
+    tags: ["Nginx", "Docker", "HTTPS", "CI/CD"]
+    order: 8
+    featured: true
+    icon: static/img/icons/lu-server.svg
+  - slug: ssh
+    name: SSH 与服务
+    short: SSH
+    badge: "SSH"
+    color: "#4338ca"
+    gradient: "linear-gradient(135deg,#312e81,#818cf8)"
+    description: 密钥登录、config 管理、端口转发、文件传输与安全加固，让远程运维既方便又安全。
+    intro: SSH 不只是 ssh user@host。掌握密钥、配置、隧道与加固后，远程开发和服务治理会变得顺手且可靠。
+    tags: ["密钥登录", "隧道", "SCP", "安全加固"]
+    order: 9
+    featured: true
+    badge_only: true
+    icon: static/img/icons/lu-terminal.svg
+  - slug: hardware
+    name: 硬件与软件
+    short: 硬软
+    badge: "HW"
+    color: "#334155"
+    gradient: "linear-gradient(135deg,#0f172a,#64748b)"
+    description: 理解 CPU、GPU、内存、存储、操作系统、网络与虚拟化，建立完整的计算机系统观。
+    intro: 上层代码的性能与可靠性，最终都落在硬件与操作系统上。理解系统全貌，才能做出更好的工程判断。
+    tags: ["CPU", "内存", "操作系统", "网络"]
+    order: 10
+    icon: static/img/icons/lu-cpu.svg
+  - slug: reference
+    name: 参考手册
+    short: 手册
+    badge: "REF"
+    color: "#b91c1c"
+    gradient: "linear-gradient(135deg,#7f1d1d,#fca5a5)"
+    description: HTML/CSS、JavaScript、Git、SQL、HTTP 状态码、Markdown 与正则速查，随时可查。
+    intro: 一份好的速查表能省下大量搜索时间。这里把高频语法、命令和协议要点压缩成可下载的参考页。
+    tags: ["速查", "Git", "SQL", "HTTP"]
+    order: 11
+    icon: static/img/icons/lu-book-open.svg
+  - slug: projects
+    name: 实战项目
+    short: 实战
+    badge: "LAB"
+    color: "#4f46e5"
+    gradient: "linear-gradient(135deg,#312e81,#a5b4fc)"
+    description: 把知识变成作品：C# 任务管理器、Avalonia 笔记应用、Python CLI、Java API、本地 AI 聊天。
+    intro: 每个项目都给出目标、技术栈、分步任务、验收标准与扩展方向。建议先自己实现，再对照参考方案。
+    tags: ["项目", "作品集", "验收标准"]
+    order: 12
+    icon: static/img/icons/lu-rocket.svg
+  - slug: backend
+    name: 后端开发
+    short: 后端
+    badge: "BE"
+    color: "#2563eb"
+    gradient: "linear-gradient(135deg,#1e3a8a,#0ea5e9)"
+    description: Node.js、Electron、PHP、Java、Go、Rust、C#、Servlet/JSP、RESTful API 与 ZooKeeper。
+    intro: 后端负责业务规则、数据与服务接口。本路线把语言、Web 框架、API 设计与部署串起来，按“能写接口、能接数据库、能上线”推进。
+    tags: ["Node.js", "Java Web", "RESTful API", "ZooKeeper"]
+    order: 13
+    icon: static/img/icons/si-nodedotjs.svg
+  - slug: database
+    name: 数据库
+    short: 数据库
+    badge: "DB"
+    color: "#b91c1c"
+    gradient: "linear-gradient(135deg,#7f1d1d,#fb7185)"
+    description: SQL 基础、MySQL、PostgreSQL、SQLite、MongoDB、Redis 与 Memcached。
+    intro: 先会写 SQL，再理解索引、事务和缓存。关系型数据库打底，NoSQL 与缓存按场景补充，最后能根据业务做选型。
+    tags: ["SQL", "MySQL", "Redis", "MongoDB"]
+    order: 14
+    icon: static/img/icons/si-mysql.svg
+  - slug: mobile
+    name: 移动开发
+    short: 移动
+    badge: "MOB"
+    color: "#1d4ed8"
+    gradient: "linear-gradient(135deg,#1e40af,#6366f1)"
+    description: Android、Flutter、Ionic、jQuery Mobile、Swift 与 Kotlin，覆盖原生和跨平台路线。
+    intro: 移动开发不只是写页面，还要理解生命周期、导航、状态、网络和发布。先选原生或跨平台，再完成一个可安装的小应用。
+    tags: ["Android", "Flutter", "Swift", "Kotlin"]
+    order: 15
+    icon: static/img/icons/si-android.svg
+  - slug: devops
+    name: DevOps 与工程化
+    short: DevOps
+    badge: "OPS"
+    color: "#1e3a8a"
+    gradient: "linear-gradient(135deg,#0f172a,#ef4444)"
+    description: Git、SVN、CMake、Maven、VS Code、PyCharm、Eclipse、Obsidian、Markdown 与 LaTeX。
+    intro: 工程化决定团队协作和交付效率。从版本控制、构建工具到编辑器与文档系统，建立一套稳定的日常工具链。
+    tags: ["Git", "CMake", "Maven", "LaTeX"]
+    order: 16
+    icon: static/img/icons/si-git.svg
+  - slug: languages
+    name: 编程语言
+    short: 语言
+    badge: "LANG"
+    color: "#be123c"
+    gradient: "linear-gradient(135deg,#881337,#fb7185)"
+    description: C、C++、Zig、Scala、Ruby、Perl、Lua、Dart、汇编与 Verilog。
+    intro: 不同语言塑造不同的思维方式。先精通一门，再按系统编程、脚本、JVM、客户端和硬件描述等方向扩展。
+    tags: ["C", "C++", "Rust", "Verilog"]
+    order: 17
+    icon: static/img/icons/si-cplusplus.svg
+  - slug: cs
+    name: 计算机基础
+    short: 计算机基础
+    badge: "CS"
+    color: "#475569"
+    gradient: "linear-gradient(135deg,#1e293b,#3b82f6)"
+    description: 计算机组成、数据结构与算法、设计模式、正则、HTTP、TCP/IP、网络协议与 W3C 标准。
+    intro: 语法会过时，基础不会。理解程序如何在硬件上运行、数据如何组织、网络如何通信，才能排查复杂问题。
+    tags: ["组成原理", "数据结构", "算法", "网络"]
+    order: 18
+    icon: static/img/icons/si-thealgorithms.svg
+  - slug: xml
+    name: XML 与 Web Service
+    short: XML
+    badge: "XML"
+    color: "#0369a1"
+    gradient: "linear-gradient(135deg,#0c4a6e,#38bdf8)"
+    description: XML、DTD、XSLT、XPath、XQuery、XLink、XPointer、XML Schema、XSL-FO 与 Web Service。
+    intro: XML 仍广泛存在于企业接口、配置和文档标准中。掌握结构校验、查询转换和 SOAP 服务，能读懂大量遗留系统。
+    tags: ["XML", "XPath", "SOAP", "WSDL"]
+    order: 19
+    icon: static/img/icons/si-xml.svg
+  - slug: dotnet
+    name: .NET 生态
+    short: .NET
+    badge: ".NET"
+    color: "#4338ca"
+    gradient: "linear-gradient(135deg,#312e81,#3b82f6)"
+    description: ASP.NET、MVC、Razor、Web Forms、Web Pages 与 PowerShell。
+    intro: .NET 既能构建现代 Web API，也承载大量企业系统。理解 MVC、Razor 与旧版 Web Forms，再补上 PowerShell 自动化。
+    tags: ["ASP.NET", "MVC", "Razor", "PowerShell"]
+    order: 20
+    icon: static/img/icons/si-dotnet.svg
+  - slug: website
+    name: 网站建设
+    short: 建站
+    badge: "WEB"
+    color: "#dc2626"
+    gradient: "linear-gradient(135deg,#7f1d1d,#2563eb)"
+    description: 网站建设指南、浏览器信息、网站主机教程与网站品质。
+    intro: 从域名、主机、DNS 到性能、SEO 与可访问性，把“做一个网站”变成“运营一个可靠的网站”。
+    tags: ["域名", "主机", "DNS", "SEO"]
+    order: 21
+    icon: static/img/icons/lu-globe.svg
+  - slug: foundations
+    name: 编程基础
+    short: 基础
+    badge: "BASE"
+    color: "#1d4ed8"
+    gradient: "linear-gradient(135deg,#1e3a8a,#ef4444)"
+    description: 变量、数据类型、数组、条件判断、循环、函数与运算符，用 C#、Python、Java、JavaScript 对照讲透。
+    intro: 这是所有编程语言共享的地基。每一章都从概念、内存模型、语法对照、常见错误到练习逐步展开，适合零基础，也适合用来补齐短板。
+    tags: ["变量", "数组", "条件", "循环", "函数"]
+    order: 22
+    icon: static/img/icons/lu-code.svg
+
+paths:
+  - title: 全栈开发路线
+    desc: 从 C# 后端到前端交互，再部署到自己的 Linux 服务器。
+    duration: 12–16 周
+    icon: "⌘"
+    color: "#1d4ed8"
+    steps:
+      - csharp/intro.html
+      - csharp/oop.html
+      - frontend/html.html
+      - frontend/css.html
+      - frontend/javascript.html
+      - csharp/aspnet.html
+      - server/setup.html
+      - server/nginx.html
+  - title: AI 工程路线
+    desc: 从理解大模型到本地运行、量化、RAG 与服务化。
+    duration: 8–12 周
+    icon: "✦"
+    color: "#1d4ed8"
+    steps:
+      - python/intro.html
+      - ai/intro.html
+      - ai/llama-cpp.html
+      - ai/quantization.html
+      - ai/deepseek-harness.html
+      - ai/rag.html
+      - server/docker.html
+      - projects/local-ai-chat.html
+  - title: 运维与部署路线
+    desc: 掌握 Linux、SSH、Nginx、Docker 与自动化发布。
+    duration: 6–10 周
+    icon: "▣"
+    color: "#1d4ed8"
+    steps:
+      - linux/intro.html
+      - linux/commands.html
+      - linux/permissions.html
+      - ssh/basics.html
+      - server/setup.html
+      - server/nginx.html
+      - server/https.html
+      - server/cicd.html
+  - title: 数据与 AI 应用路线
+    desc: 从 Python 数据处理到 Web 服务、Agent 与本地模型部署。
+    duration: 8–12 周
+    icon: "◈"
+    color: "#1d4ed8"
+    steps:
+      - python/intro.html
+      - python/curriculum.html
+      - ai/intro.html
+      - ai/curriculum.html
+      - ai/rag.html
+      - server/docker.html
+  - title: 后端、数据库与上线路线
+    desc: 建立后端接口、数据库建模和 Linux 上线能力。
+    duration: 10–14 周
+    icon: "⌁"
+    color: "#1d4ed8"
+    steps:
+      - backend/overview.html
+      - database/overview.html
+      - java/springboot.html
+      - server/docker.html
+      - server/nginx.html
+      - server/https.html
+  - title: 零基础编程路线
+    desc: 从变量到函数，用四种语言对照打牢编程基本功。
+    duration: 4–6 周
+    icon: "⌘"
+    color: "#1d4ed8"
+    steps:
+      - foundations/variables.html
+      - foundations/arrays.html
+      - foundations/conditions.html
+      - foundations/loops.html
+      - foundations/operators.html
+      - foundations/functions.html
+      - foundations/practice.html
