@@ -8,6 +8,7 @@ import hljs from 'highlight.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 process.umask(0o022);
+
 const ROOT = __dirname;
 const CONTENT = path.join(ROOT, 'content');
 const DIST = path.join(ROOT, 'dist');
@@ -15,8 +16,16 @@ const STATIC = path.join(ROOT, 'static');
 const BUILD_DATE = new Date().toISOString().slice(0, 10);
 const SITE_URL = (process.env.SITE_URL || '').replace(/\/$/, '');
 
+// ---------------------------------------------------------------------------
+// Umami 统计配置 (已注入到 layout 模板)
+// ---------------------------------------------------------------------------
+// 你可以修改这里的 UUID，或者通过环境变量 UMAMI_WEBSITE_ID 覆盖
+const UMAMI_WEBSITE_ID = process.env.UMAMI_WEBSITE_ID || 'f943a924-0f12-45c6-8788-a8d18d2f9a22';
+const UMAMI_SCRIPT_URL = process.env.UMAMI_SCRIPT_URL || 'https://cloud.umami.is/script.js';
+
 const config = yaml.load(fs.readFileSync(path.join(ROOT, 'config.yml'), 'utf8'));
 const catalogData = yaml.load(fs.readFileSync(path.join(ROOT, 'data', 'catalog.yml'), 'utf8'));
+
 const site = config.site;
 const categories = config.categories.sort((a, b) => a.order - b.order);
 const categoryMap = new Map(categories.map((c) => [c.slug, c]));
@@ -90,7 +99,7 @@ function htmlToText(html = '') {
     .replace(/&gt;/g, '>')
     .replace(/&amp;/g, '&')
     .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
+    .replace(/'/g, "'")
     .replace(/\s+/g, ' ')
     .trim();
 }
@@ -131,30 +140,29 @@ function renderQuizCard(quiz, index, prefix = 'quiz') {
   const options = Array.isArray(quiz.options) ? quiz.options : [];
   const id = `${prefix}-${index + 1}`;
   const answer = parseAnswer(quiz.answer);
-  const opts = options.map((opt, i) => `
-    <label class="quiz-option" data-option="${i}">
+  const opts = options.map((opt, i) =>
+    `<label class="quiz-option" data-option="${i}">
       <input type="radio" name="${id}" value="${i}">
       <span class="quiz-letter">${String.fromCharCode(65 + i)}</span>
       <span class="quiz-option-text">${inlineMd(opt)}</span>
-    </label>`).join('');
+    </label>`
+  ).join('');
   return `<div class="quiz-card" data-quiz data-answer="${answer}">
-  <div class="quiz-top"><span class="quiz-badge">随堂练习</span><span class="quiz-index">Q${index + 1}</span></div>
-  <div class="quiz-question">${inlineMd(quiz.question)}</div>
-  <div class="quiz-options" role="radiogroup" aria-label="选项">${opts}</div>
-  <div class="quiz-actions">
-    <button type="button" class="btn btn-primary btn-sm" data-quiz-check>检查答案</button>
-    <button type="button" class="btn btn-ghost btn-sm" data-quiz-reveal>查看解析</button>
-  </div>
-  <div class="quiz-feedback" aria-live="polite"></div>
-  <div class="quiz-explain" hidden><strong>解析：</strong>${inlineMd(quiz.explain || '回到正文中对应章节复习一下。')}</div>
-</div>`;
+    <div class="quiz-top"><span class="quiz-badge">随堂练习</span><span class="quiz-index">Q${index + 1}</span></div>
+    <div class="quiz-question">${inlineMd(quiz.question)}</div>
+    <div class="quiz-options" role="radiogroup" aria-label="选项">${opts}</div>
+    <div class="quiz-actions">
+      <button type="button" class="btn btn-primary btn-sm" data-quiz-check>检查答案</button>
+      <button type="button" class="btn btn-ghost btn-sm" data-quiz-reveal>查看解析</button>
+    </div>
+    <div class="quiz-feedback" aria-live="polite"></div>
+    <div class="quiz-explain" hidden><strong>解析：</strong>${inlineMd(quiz.explain || '回到正文中对应章节复习一下。')}</div>
+  </div>`;
 }
 
 function renderMarkdown(body, article) {
-  // 页面模板已经渲染文章标题，正文首个 H1 只用于 Markdown 下载，避免重复 h1。
   let source = body.replace(/^\s*#\s+[^\n]+\n+/, '');
   let quizCount = 0;
-
   source = source.replace(/^:::quiz[ \t]*\n([\s\S]*?)\n:::[ \t]*$/gm, (_, raw) => {
     let quiz;
     try {
@@ -168,8 +176,8 @@ function renderMarkdown(body, article) {
 
   const calloutTitles = { tip: '提示', note: '说明', warn: '注意', danger: '警告', info: '补充' };
   const alertMap = { TIP: 'tip', NOTE: 'note', WARNING: 'warn', IMPORTANT: 'info', CAUTION: 'danger' };
-  source = source.replace(/^> \[!(TIP|NOTE|WARNING|IMPORTANT|CAUTION)\][ \t]*\n((?:>[ \t]?.*(?:\n|$))*)/gm, (_, type, rest) => {
-    const inner = rest.replace(/^>[ \t]?/gm, '').trim();
+  source = source.replace(/^>\s*[!(TIP|NOTE|WARNING|IMPORTANT|CAUTION)]\s*\n((?:>\s?.*(?:\n|$))+)/gm, (_, type, rest) => {
+    const inner = rest.replace(/^>\s?/gm, '').trim();
     const kind = alertMap[type] || 'note';
     return `\n\n<div class="callout callout-${kind}"><div class="callout-title">${calloutTitles[kind]}</div>${marked.parse(inner)}</div>\n\n`;
   });
@@ -330,11 +338,9 @@ function headerHtml(currentPath) {
     }
     return `<a class="nav-link${item.match(currentPath) ? ' active' : ''}" href="${href}">${item.label}</a>`;
   }).join('');
-
   const categoryLinks = categories.map((c) =>
     `<a class="mobile-cat-link" href="${relLink(currentPath, `${c.slug}/index.html`)}"><span class="mobile-cat-icon">${iconTag(c.icon, currentPath, 'mobile-cat-icon-img', '')}</span>${c.name}</a>`
   ).join('');
-
   return `<a class="skip-link" href="#main">跳到主要内容</a>
 <div class="top-strip">
   <div class="container top-strip-inner">
@@ -476,40 +482,36 @@ function layout({ title, description, currentPath, content, bodyClass = '', extr
   const root = rootPrefix(currentPath);
   const pageTitle = title ? `${title} | ${site.name}` : `${site.name} · ${site.tagline}`;
   const desc = description || site.description;
-  const jsonLd = article ? `<script type="application/ld+json">${JSON.stringify({
-    '@context': 'https://schema.org',
-    '@type': 'TechArticle',
-    headline: article.title,
-    description: article.description,
-    dateModified: formatDate(article.updated),
-    author: { '@type': 'Organization', name: site.author },
-    publisher: { '@type': 'Organization', name: site.name },
-    inLanguage: 'zh-CN',
-  })}</script>` : '';
+  const jsonLd = article ? `<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'TechArticle', headline: article.title, description: article.description, dateModified: formatDate(article.updated), author: { '@type': 'Organization', name: site.author }, publisher: { '@type': 'Organization', name: site.name }, inLanguage: 'zh-CN' })}</script>` : '';
+  
+  // Umami 统计脚本 (已注入)
+  const umamiAnalytics = `<script defer src="${UMAMI_SCRIPT_URL}" data-website-id="${UMAMI_WEBSITE_ID}"></script>`;
+
   return `<!doctype html>
 <html lang="zh-CN" data-theme="light">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${escapeHtml(pageTitle)}</title>
-<meta name="description" content="${escapeHtml(desc)}">
-<meta name="keywords" content="${escapeHtml(site.keywords)}">
-<meta name="author" content="${escapeHtml(site.author)}">
-<meta name="theme-color" content="#1d4ed8">
-<meta property="og:title" content="${escapeHtml(pageTitle)}">
-<meta property="og:description" content="${escapeHtml(desc)}">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="${escapeHtml(site.name)}">
-<link rel="icon" type="image/png" sizes="32x32" href="${relLink(currentPath, 'static/img/brand/favicon-32.png')}">
-<link rel="icon" type="image/x-icon" href="${relLink(currentPath, site.favicon)}">
-<link rel="apple-touch-icon" sizes="180x180" href="${relLink(currentPath, site.touch_icon)}">
-<link rel="manifest" href="${relLink(currentPath, 'manifest.webmanifest')}">
-<link rel="stylesheet" href="${relLink(currentPath, 'static/css/style.css')}">
-<script>try{var _tv=localStorage.getItem('techlearn:theme');var _t=_tv?JSON.parse(_tv):null;if(_t==='dark'||(!_t&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.dataset.theme='dark';}catch(e){}</script>
-${extraHead}
-${jsonLd}
-</head>
-<body class="${bodyClass}" data-root="${root}" data-page-id="${escapeHtml(currentPath)}" data-page-title="${escapeHtml(article?.title || title || site.name)}">
+ <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>${escapeHtml(pageTitle)}</title>
+  <meta name="description" content="${escapeHtml(desc)}">
+  <meta name="keywords" content="${escapeHtml(site.keywords)}">
+  <meta name="author" content="${escapeHtml(site.author)}">
+  <meta name="theme-color" content="#1d4ed8">
+  <meta property="og:title" content="${escapeHtml(pageTitle)}">
+  <meta property="og:description" content="${escapeHtml(desc)}">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="${escapeHtml(site.name)}">
+  <link rel="icon" type="image/png" sizes="32x32" href="${relLink(currentPath, 'static/img/brand/favicon-32.png')}">
+  <link rel="icon" type="image/x-icon" href="${relLink(currentPath, site.favicon)}">
+  <link rel="apple-touch-icon" sizes="180x180" href="${relLink(currentPath, site.touch_icon)}">
+  <link rel="manifest" href="${relLink(currentPath, 'manifest.webmanifest')}">
+  <link rel="stylesheet" href="${relLink(currentPath, 'static/css/style.css')}">
+  <script>try{var _tv=localStorage.getItem('techlearn:theme');var _t=_tv?JSON.parse(_tv):null;if(_t==='dark'||(!_t&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.dataset.theme='dark';}catch(e){}</script>
+  ${umamiAnalytics}
+  ${extraHead}
+  ${jsonLd}
+ </head>
+ <body class="${bodyClass}" data-root="${root}" data-page-id="${escapeHtml(currentPath)}" data-page-title="${escapeHtml(article?.title || title || site.name)}">
 ${headerHtml(currentPath)}
 <main id="main">${content}</main>
 ${footerHtml(currentPath)}
@@ -526,24 +528,25 @@ ${aiWidgetHtml(currentPath)}
 // Article page
 // ---------------------------------------------------------------------------
 function sidebarHtml(currentPath, category, activeArticle) {
-  const lessons = category.articles.map((a, i) => `
-    <a class="sidebar-lesson${a.path === activeArticle.path ? ' active' : ''}" href="${relLink(currentPath, a.path)}" data-progress-key="${a.path}">
+  const lessons = category.articles.map((a, i) =>
+    `<a class="sidebar-lesson${a.path === activeArticle.path ? ' active' : ''}" href="${relLink(currentPath, a.path)}" data-progress-key="${a.path}">
       <span class="lesson-num">${String(i + 1).padStart(2, '0')}</span>
       <span class="lesson-name">${escapeHtml(a.title)}</span>
       <span class="lesson-check" aria-hidden="true">✓</span>
-    </a>`).join('');
+    </a>`
+  ).join('');
   return `<aside class="sidebar" aria-label="课程目录">
-    <div class="sidebar-category">
-      <div class="sidebar-cat-head">${catBadge(category, currentPath)}<div><strong>${category.name}</strong><small>${category.articles.length} 篇文章 · ${category.minutes} 分钟</small></div></div>
-      <div class="progress-line"><span class="progress-fill" data-progress-fill="${category.slug}"></span></div>
-      <div class="progress-label"><span>学习进度</span><span data-progress-text="${category.slug}">0 / ${category.articles.length}</span></div>
-    </div>
-    <nav class="sidebar-list">${lessons}</nav>
-    <div class="sidebar-cta">
-      <a class="side-download" href="${relLink(currentPath, `md/${category.slug}.md`)}" download>↓ 下载本分类 Markdown</a>
-      <a class="side-all" href="${relLink(currentPath, 'all-tutorials.html')}">浏览全部教程 →</a>
-    </div>
-  </aside>`;
+  <div class="sidebar-category">
+    <div class="sidebar-cat-head">${catBadge(category, currentPath)}<div><strong>${category.name}</strong><small>${category.articles.length} 篇文章 · ${category.minutes} 分钟</small></div></div>
+    <div class="progress-line"><span class="progress-fill" data-progress-fill="${category.slug}"></span></div>
+    <div class="progress-label"><span>学习进度</span><span data-progress-text="${category.slug}">0 / ${category.articles.length}</span></div>
+  </div>
+  <nav class="sidebar-list">${lessons}</nav>
+  <div class="sidebar-cta">
+    <a class="side-download" href="${relLink(currentPath, `md/${category.slug}.md`)}" download>↓ 下载本分类 Markdown</a>
+    <a class="side-all" href="${relLink(currentPath, 'all-tutorials.html')}">浏览全部教程 →</a>
+  </div>
+</aside>`;
 }
 
 function tocHtml(currentPath, article) {
@@ -551,18 +554,18 @@ function tocHtml(currentPath, article) {
     `<a class="toc-link level-${h.level}" href="#${h.id}">${escapeHtml(h.text)}</a>`
   ).join('');
   return `<aside class="toc" aria-label="本页目录">
-    <div class="toc-inner">
-      <div class="toc-title">本页目录</div>
-      <nav class="toc-list">${items || '<span class="toc-empty">本页暂无小标题</span>'}</nav>
-      <div class="toc-actions">
-        <a href="${relLink(currentPath, `md/${article.category}/${article.slug}.md`)}" download class="toc-action"><span>↓</span>下载 .md</a>
-        <button class="toc-action js-open-ai" type="button"><span>✦</span>问 AI 这一页</button>
-        <button class="toc-action" type="button" data-copy-link><span>⧉</span>复制链接</button>
-        <button class="toc-action" type="button" data-print><span>⌘</span>打印页面</button>
-      </div>
-      <div class="toc-meta">约 ${article.minutes} 分钟 · ${article.chars} 字</div>
+  <div class="toc-inner">
+    <div class="toc-title">本页目录</div>
+    <nav class="toc-list">${items || '<span class="toc-empty">本页暂无小标题</span>'}</nav>
+    <div class="toc-actions">
+      <a href="${relLink(currentPath, `md/${article.category}/${article.slug}.md`)}" download class="toc-action"><span>↓</span>下载 .md</a>
+      <button class="toc-action js-open-ai" type="button"><span>✦</span>问 AI 这一页</button>
+      <button class="toc-action" type="button" data-copy-link><span>⧉</span>复制链接</button>
+      <button class="toc-action" type="button" data-print><span>⌘</span>打印页面</button>
     </div>
-  </aside>`;
+    <div class="toc-meta">约 ${article.minutes} 分钟 · ${article.chars} 字</div>
+  </div>
+</aside>`;
 }
 
 function articlePage(article) {
@@ -572,10 +575,13 @@ function articlePage(article) {
   const next = category.articles[index + 1];
   const practice = category.articles.find((a) => a.practice);
   const prevNext = `<nav class="page-nav" aria-label="上一篇下一篇">
-    ${prev ? `<a class="page-nav-item prev" href="${relLink(article.path, prev.path)}"><span>← 上一篇</span><strong>${escapeHtml(prev.title)}</strong></a>` : '<span></span>'}
-    ${next ? `<a class="page-nav-item next" href="${relLink(article.path, next.path)}"><span>下一篇 →</span><strong>${escapeHtml(next.title)}</strong></a>` : `<a class="page-nav-item next" href="${relLink(article.path, 'all-tutorials.html')}"><span>继续探索 →</span><strong>浏览全部教程</strong></a>`}
-  </nav>`;
-  const practiceBox = practice && practice.path !== article.path ? `<div class="inline-cta"><div><strong>学完了？做几道练习巩固一下</strong><p>${escapeHtml(practice.description)}</p></div><a class="btn btn-primary btn-sm" href="${relLink(article.path, practice.path)}">去做练习 →</a></div>` : '';
+  ${prev ? `<a class="page-nav-item prev" href="${relLink(article.path, prev.path)}"><span>← 上一篇</span><strong>${escapeHtml(prev.title)}</strong></a>` : '<span></span>'}
+  ${next ? `<a class="page-nav-item next" href="${relLink(article.path, next.path)}"><span>下一篇 →</span><strong>${escapeHtml(next.title)}</strong></a>` : `<a class="page-nav-item next" href="${relLink(article.path, 'all-tutorials.html')}"><span>继续探索 →</span><strong>浏览全部教程</strong></a>`}
+</nav>`;
+  const practiceBox = practice && practice.path !== article.path ? `<div class="inline-cta">
+  <div><strong>学完了？做几道练习巩固一下</strong><p>${escapeHtml(practice.description)}</p></div>
+  <a class="btn btn-primary btn-sm" href="${relLink(article.path, practice.path)}">去做练习 →</a>
+</div>` : '';
   const content = `<div class="reading-progress" id="readingProgress"></div>
 <div class="container page-shell">
   ${sidebarHtml(article.path, category, article)}
@@ -583,7 +589,7 @@ function articlePage(article) {
     <nav class="breadcrumb" aria-label="面包屑"><a href="${relLink(article.path, 'index.html')}">首页</a><span>/</span><a href="${relLink(article.path, `${category.slug}/index.html`)}">${category.name}</a><span>/</span><span>${escapeHtml(article.title)}</span></nav>
     <article class="article-card">
       <header class="article-header" style="--accent:${category.color}">
-        <div class="article-eyebrow"><a class="badge-link" href="${relLink(article.path, `${category.slug}/index.html`)}">${category.name}</a>${article.practice ? '<span class="badge badge-green">练习课</span>' : ''}</div>
+        <div class="article-eyebrow"><a class="badge-link" href="${relLink(article.path, `${category.slug}/index.html`)}">${category.name}</a>${article.practice ? ' <span class="badge badge-green">练习课</span>' : ''}</div>
         <h1>${escapeHtml(article.title)}</h1>
         <p class="article-lead">${escapeHtml(article.description)}</p>
         <div class="article-meta">
@@ -593,7 +599,7 @@ function articlePage(article) {
       <div class="article-body" data-article-body>${article.html}</div>
       ${practiceBox}
       <footer class="article-footer">
-        <div class="article-tags">${article.tags.map((t) => `<span class="tag"># ${escapeHtml(t)}</span>`).join('')}</div>
+        <div class="article-tags">${article.tags.map((t) => `<span class="tag">#${escapeHtml(t)}</span>`).join('')}</div>
         <div class="article-actions">
           <button class="btn btn-primary btn-sm js-mark-read" type="button" data-mark-key="${article.path}">标记为已学完</button>
           <a class="btn btn-ghost btn-sm" href="${relLink(article.path, `md/${article.category}/${article.slug}.md`)}" download>下载本章 .md</a>
@@ -601,7 +607,10 @@ function articlePage(article) {
       </footer>
     </article>
     <section class="notes-card" aria-label="学习笔记">
-      <div class="notes-head"><div><span class="notes-icon">✎</span><div><strong>我的学习笔记</strong><small>笔记保存在本机浏览器，不会上传。</small></div></div><div class="notes-actions"><button class="btn btn-ghost btn-sm" type="button" data-notes-export>导出 .md</button><button class="btn btn-ghost btn-sm" type="button" data-notes-clear>清空</button></div></div>
+      <div class="notes-head">
+        <div><span class="notes-icon">✎</span><div><strong>我的学习笔记</strong><small>笔记保存在本机浏览器，不会上传。</small></div></div>
+        <div class="notes-actions"><button class="btn btn-ghost btn-sm" type="button" data-notes-export>导出 .md</button><button class="btn btn-ghost btn-sm" type="button" data-notes-clear>清空</button></div>
+      </div>
       <textarea id="articleNotes" class="notes-input" rows="5" placeholder="记录这一页的重点、疑问或代码片段…"></textarea>
       <div class="notes-foot"><span class="notes-status" id="notesStatus"></span><button class="btn btn-primary btn-sm" type="button" data-notes-save>保存笔记</button></div>
     </section>
@@ -624,42 +633,43 @@ function articlePage(article) {
 // ---------------------------------------------------------------------------
 function categoryPage(category) {
   const pagePath = `${category.slug}/index.html`;
-  const lessons = category.articles.map((a, i) => `
-    <a class="lesson-row${a.practice ? ' is-practice' : ''}" href="${relLink(pagePath, a.path)}" data-progress-key="${a.path}">
+  const lessons = category.articles.map((a, i) =>
+    `<a class="lesson-row${a.practice ? ' is-practice' : ''}" href="${relLink(pagePath, a.path)}" data-progress-key="${a.path}">
       <span class="lesson-row-num">${String(i + 1).padStart(2, '0')}</span>
       <span class="lesson-row-main"><strong>${escapeHtml(a.title)}</strong><small>${escapeHtml(a.description)}</small><span class="lesson-row-meta">${a.minutes} 分钟${a.quizCount ? ` · ${a.quizCount} 道练习` : ''}${a.practice ? ' · 练习课' : ''}</span></span>
       <span class="lesson-row-check" aria-hidden="true">✓</span>
       <span class="lesson-row-arrow">→</span>
-    </a>`).join('');
+    </a>`
+  ).join('');
   const tags = category.tags.map((t) => `<span class="tag">${escapeHtml(t)}</span>`).join('');
   const project = category.project ? getArticle(category.project) : null;
   const heroIcon = category.icon ? iconTag(category.icon, pagePath, 'category-hero-icon', '') : '';
   const content = `<div class="container category-page">
-    <nav class="breadcrumb" aria-label="面包屑"><a href="${relLink(pagePath, 'index.html')}">首页</a><span>/</span><span>${category.name}</span></nav>
-    <section class="category-hero" style="--accent:${category.color};--accent-gradient:${category.gradient}">
-      <div class="category-hero-copy">
-        <div class="category-kicker">${catBadge(category, pagePath, 'lg')}<span>LEARNING TRACK</span></div>
-        <h1>${category.name}</h1>
-        <p>${escapeHtml(category.intro)}</p>
-        <div class="hero-meta"><span><strong>${category.articles.length}</strong> 篇教程</span><span><strong>${category.minutes}</strong> 分钟</span><span><strong>${category.quizCount}</strong> 道练习</span></div>
-        <div class="hero-actions"><a class="btn btn-primary" href="${relLink(pagePath, category.articles[0]?.path || 'all-tutorials.html')}">开始学习 →</a><a class="btn btn-ghost" href="${relLink(pagePath, `md/${category.slug}.md`)}" download>下载整门课 .md</a></div>
-        <div class="category-tags">${tags}</div>
-      </div>
-      <div class="category-hero-art">${heroIcon}<div class="hero-art-glow"></div>${catBadge(category, pagePath, 'hero')}</div>
-    </section>
-    <div class="category-layout">
-      <section class="category-main">
-        <div class="section-heading"><div><span class="section-kicker">COURSE MAP</span><h2>课程目录</h2></div><span class="section-note">按顺序学习效果更好</span></div>
-        <div class="lesson-list">${lessons}</div>
-        ${category.quizCount ? `<div class="inline-cta"><div><strong>边学边练，记得更牢</strong><p>本课程包含 ${category.quizCount} 道随堂练习，全部在页面内完成并即时查看解析。</p></div><a class="btn btn-primary btn-sm" href="${relLink(pagePath, category.articles.find((a) => a.practice)?.path || category.articles[0].path)}">进入练习 →</a></div>` : ''}
-      </section>
-      <aside class="category-aside">
-        <div class="aside-card"><h3>学习建议</h3><p>先快速浏览目录，按顺序完成每篇文章的示例代码；遇到不懂的概念，随时打开右下角 AI 学习助手。</p><ul class="check-list"><li>每篇至少动手敲一遍代码</li><li>完成页面内的随堂练习</li><li>用 Markdown 下载做离线笔记</li></ul></div>
-        ${project ? `<div class="aside-card"><span class="section-kicker">PROJECT</span><h3>配套实战项目</h3><p>${escapeHtml(project.description)}</p><a class="text-link" href="${relLink(pagePath, project.path)}">查看项目 →</a></div>` : ''}
-        <div class="aside-card aside-download-card"><span class="download-icon">↓</span><h3>离线学习包</h3><p>下载本课程全部文章为 Markdown，可导入 Obsidian、Notion 或任意笔记工具。</p><a class="btn btn-primary btn-sm" href="${relLink(pagePath, `md/${category.slug}.md`)}" download>下载 .md 合集</a></div>
-      </aside>
+  <nav class="breadcrumb" aria-label="面包屑"><a href="${relLink(pagePath, 'index.html')}">首页</a><span>/</span><span>${category.name}</span></nav>
+  <section class="category-hero" style="--accent:${category.color};--accent-gradient:${category.gradient}">
+    <div class="category-hero-copy">
+      <div class="category-kicker">${catBadge(category, pagePath, 'lg')}<span>LEARNING TRACK</span></div>
+      <h1>${category.name}</h1>
+      <p>${escapeHtml(category.intro)}</p>
+      <div class="hero-meta"><span><strong>${category.articles.length}</strong> 篇教程</span><span><strong>${category.minutes}</strong> 分钟</span><span><strong>${category.quizCount}</strong> 道练习</span></div>
+      <div class="hero-actions"><a class="btn btn-primary" href="${relLink(pagePath, category.articles[0]?.path || 'all-tutorials.html')}">开始学习 →</a><a class="btn btn-ghost" href="${relLink(pagePath, `md/${category.slug}.md`)}" download>下载整门课 .md</a></div>
+      <div class="category-tags">${tags}</div>
     </div>
-  </div>`;
+    <div class="category-hero-art">${heroIcon}<div class="hero-art-glow"></div>${catBadge(category, pagePath, 'hero')}</div>
+  </section>
+  <div class="category-layout">
+    <section class="category-main">
+      <div class="section-heading"><div><span class="section-kicker">COURSE MAP</span><h2>课程目录</h2></div><span class="section-note">按顺序学习效果更好</span></div>
+      <div class="lesson-list">${lessons}</div>
+      ${category.quizCount ? `<div class="inline-cta"><div><strong>边学边练，记得更牢</strong><p>本课程包含 ${category.quizCount} 道随堂练习，全部在页面内完成并即时查看解析。</p></div><a class="btn btn-primary btn-sm" href="${relLink(pagePath, category.articles.find((a) => a.practice)?.path || category.articles[0].path)}">进入练习 →</a></div>` : ''}
+    </section>
+    <aside class="category-aside">
+      <div class="aside-card"><h3>学习建议</h3><p>先快速浏览目录，按顺序完成每篇文章的示例代码；遇到不懂的概念，随时打开右下角 AI 学习助手。</p><ul class="check-list"><li>每篇至少动手敲一遍代码</li><li>完成页面内的随堂练习</li><li>用 Markdown 下载做离线笔记</li></ul></div>
+      ${project ? `<div class="aside-card"><span class="section-kicker">PROJECT</span><h3>配套实战项目</h3><p>${escapeHtml(project.description)}</p><a class="text-link" href="${relLink(pagePath, project.path)}">查看项目 →</a></div>` : ''}
+      <div class="aside-card aside-download-card"><span class="download-icon">↓</span><h3>离线学习包</h3><p>下载本课程全部文章为 Markdown，可导入 Obsidian、Notion 或任意笔记工具。</p><a class="btn btn-primary btn-sm" href="${relLink(pagePath, `md/${category.slug}.md`)}" download>下载 .md 合集</a></div>
+    </aside>
+  </div>
+</div>`;
   return layout({
     title: category.name,
     description: category.description,
@@ -708,77 +718,102 @@ function homePage() {
   };
   const localCatalog = catalogData.catalog.flatMap((g) => g.items.filter((i) => i.local)).slice(0, 10);
   const content = `<section class="hero">
-    <div class="hero-grid-bg"></div>
-    <div class="container hero-inner">
-      <div class="hero-copy">
-        <div class="hero-pill"><span class="pulse-dot"></span> 2026 实战版 · 从入门到部署</div>
-        <h1>从第一行代码，<br>到<span class="grad-text">独立部署上线</span></h1>
-        <p class="hero-sub">Python 与数据科学、AI Agent、前端、后端、数据库、移动开发、DevOps、计算机基础与 Linux 部署。150 个教程主题、100 篇原创精讲，每篇文章都能下载为 Markdown，遇到问题随时问 AI 学习助手。</p>
-        <div class="hero-search"><button class="hero-search-box" id="heroSearch"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><span>搜索教程、命令或概念，例如 “FastAPI”、“Agent” 或 “SQL”</span><kbd>/</kbd></button></div>
-        <div class="hero-actions"><a class="btn btn-primary btn-lg" href="${relLink(currentPath, 'python/intro.html')}">开始学习 Python →</a><a class="btn btn-ghost btn-lg" href="${relLink(currentPath, 'all-tutorials.html')}">浏览 150 个主题</a></div>
-        <div class="hero-stats"><div><strong>${stats.articles}+</strong><span>精讲文章</span></div><div><strong>${stats.quizzes}+</strong><span>随堂练习</span></div><div><strong>${catalogCount}+</strong><span>教程目录</span></div><div><strong>100%</strong><span>Markdown 可下载</span></div></div>
-      </div>
-      <div class="hero-visual" aria-label="StarLearn 技术图标">
-        <div class="visual-main"><div class="visual-main-bar"><span></span><span></span><span></span><em>Program.cs</em></div><pre><code><span class="c-key">using</span> System;
+  <div class="hero-grid-bg"></div>
+  <div class="container hero-inner">
+    <div class="hero-copy">
+      <div class="hero-pill"><span class="pulse-dot"></span> 2026 实战版 · 从入门到部署</div>
+      <h1>从第一行代码，<br>到<span class="grad-text">独立部署上线</span></h1>
+      <p class="hero-sub">Python 与数据科学、AI Agent、前端、后端、数据库、移动开发、DevOps、计算机基础与 Linux 部署。150 个教程主题、100 篇原创精讲，每篇文章都能下载为 Markdown，遇到问题随时问 AI 学习助手。</p>
+      <div class="hero-search"><button class="hero-search-box" id="heroSearch"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><span>搜索教程、命令或概念，例如 "FastAPI"、"Agent" 或 "SQL"</span><kbd>/</kbd></button></div>
+      <div class="hero-actions"><a class="btn btn-primary btn-lg" href="${relLink(currentPath, 'python/intro.html')}">开始学习 Python →</a><a class="btn btn-ghost btn-lg" href="${relLink(currentPath, 'all-tutorials.html')}">浏览 150 个主题</a></div>
+      <div class="hero-stats"><div><strong>${stats.articles}+</strong><span>精讲文章</span></div><div><strong>${stats.quizzes}+</strong><span>随堂练习</span></div><div><strong>${catalogCount}+</strong><span>教程目录</span></div><div><strong>100%</strong><span>Markdown 可下载</span></div></div>
+    </div>
+    <div class="hero-visual" aria-label="StarLearn 技术图标">
+      <div class="visual-main">
+        <div class="visual-main-bar"><span></span><span></span><span></span><em>Program.cs</em></div>
+        <pre><code><span class="c-key">using</span> System;
 <span class="c-key">var</span> skills = <span class="c-key">new</span>[] { <span class="c-str">"C#"</span>, <span class="c-str">"Avalonia"</span>, <span class="c-str">"AI"</span> };
 <span class="c-key">foreach</span> (<span class="c-key">var</span> s <span class="c-key">in</span> skills)
-    Console.WriteLine(<span class="c-str">$"Learn {s} by building."</span>);</code></pre><div class="visual-output">Learn C# by building.<br>Learn Avalonia by building.<br>Learn AI by building.</div></div>
-        <div class="visual-card card-python"><img src="${relLink(currentPath, 'static/img/icons/si-python.svg')}" alt="Python 图标"><span>Python</span></div>
-        <div class="visual-card card-docker"><img src="${relLink(currentPath, 'static/img/icons/si-docker.svg')}" alt="Docker 图标"><span>Docker</span></div>
-        <div class="visual-card card-linux"><img src="${relLink(currentPath, 'static/img/icons/si-linux.svg')}" alt="Linux 图标"><span>Linux</span></div>
-        <div class="visual-card card-data"><img src="${relLink(currentPath, 'static/img/icons/si-thealgorithms.svg')}" alt="算法图标"><span>CS 基础</span></div>
-        <span class="visual-credit">图标：Simple Icons CC0 · Lucide ISC</span>
+  Console.WriteLine(<span class="c-str">$"Learn {s} by building."</span>);</code></pre>
+        <div class="visual-output">Learn C# by building.<br>Learn Avalonia by building.<br>Learn AI by building.</div>
+      </div>
+      <div class="visual-card card-python"><img src="${relLink(currentPath, 'static/img/icons/si-python.svg')}" alt="Python 图标"><span>Python</span></div>
+      <div class="visual-card card-docker"><img src="${relLink(currentPath, 'static/img/icons/si-docker.svg')}" alt="Docker 图标"><span>Docker</span></div>
+      <div class="visual-card card-linux"><img src="${relLink(currentPath, 'static/img/icons/si-linux.svg')}" alt="Linux 图标"><span>Linux</span></div>
+      <div class="visual-card card-data"><img src="${relLink(currentPath, 'static/img/icons/si-thealgorithms.svg')}" alt="算法图标"><span>CS 基础</span></div>
+      <span class="visual-credit">图标：Simple Icons CC0 · Lucide ISC</span>
+    </div>
+  </div>
+  <div class="container hero-marquee"><span>热门路径</span><a href="${relLink(currentPath, 'ai/llama-cpp.html')}">llama.cpp 本地推理</a><a href="${relLink(currentPath, 'avalonia/mvvm.html')}">Avalonia MVVM</a><a href="${relLink(currentPath, 'server/nginx.html')}">Nginx 反向代理</a><a href="${relLink(currentPath, 'ssh/keys.html')}">SSH 密钥登录</a><a href="${relLink(currentPath, 'ai/deepseek-harness.html')}">DeepSeek Harness</a><a href="${relLink(currentPath, 'hardware/architecture.html')}">计算机组成</a><a href="${relLink(currentPath, 'python/curriculum.html')}">Python 数据科学</a><a href="${relLink(currentPath, 'ai/curriculum.html')}">AI Agent</a><a href="${relLink(currentPath, 'database/overview.html')}">数据库选型</a><a href="${relLink(currentPath, 'foundations/variables.html')}">编程基础</a></div>
+</section>
+<section class="container section" id="tracks">
+  <div class="section-heading"><div><span class="section-kicker">LEARNING TRACKS</span><h2>选择你的学习方向</h2></div><a class="section-link" href="${relLink(currentPath, 'all-tutorials.html')}">查看全部 ${catalogCount}+ 个主题 →</a></div>
+  <div class="track-grid">${tracks}</div>
+</section>
+<section class="container section" id="paths">
+  <div class="section-heading"><div><span class="section-kicker">ROADMAPS</span><h2>${paths.length} 条可执行的学习路线</h2></div><span class="section-note">不用再纠结先学什么</span></div>
+  <div class="path-grid">${paths}</div>
+</section>
+<section class="container section featured-section">
+  <div class="section-heading"><div><span class="section-kicker">POPULAR NOW</span><h2>热门教程</h2></div><a class="section-link" href="${relLink(currentPath, 'all-tutorials.html')}">全部教程 →</a></div>
+  <div class="featured-grid">
+    <div class="featured-list">${featureList}</div>
+    <aside class="featured-aside">
+      <div class="mini-terminal">
+        <div class="mini-terminal-head"><span></span><span></span><span></span></div>
+        <pre><code><span class="term-green">$</span> dotnet run
+Hello, StarLearn!
+<span class="term-green">$</span> llama-cli -m model.gguf
+  <span class="term-dim">loaded 7B model, Q4_K_M</span>
+<span class="term-green">$</span> ssh deploy@server
+  <span class="term-dim">✓ connected · deploy ready</span></code></pre>
+      </div>
+      <h3>边学边做，马上看到结果</h3>
+      <p>每篇教程都有可运行示例、练习和下一步指引。学完一个模块，就把它部署到自己的服务器。</p>
+      <a class="text-link" href="${relLink(currentPath, 'projects/local-ai-chat.html')}">看实战项目 →</a>
+    </aside>
+  </div>
+</section>
+<section class="container section ai-section">
+  <div class="ai-band">
+    <div class="ai-band-copy">
+      <span class="section-kicker green">AI LEARNING</span>
+      <h2>不只学 AI，<br>把 AI 变成你的学习搭档</h2>
+      <p>理解 llama.cpp 的推理流程、GGUF 量化与 DeepSeek Harness 的 Agent 工作流；再用站内 AI 助手解释概念、出题和规划路线。</p>
+      <div class="hero-actions"><a class="btn btn-primary" href="${relLink(currentPath, 'ai/intro.html')}">进入 AI 学习路线 →</a><button class="btn btn-ghost js-open-ai" type="button">打开 AI 助手</button></div>
+      <div class="ai-chips"><span>llama.cpp</span><span>GGUF / Q4_K_M</span><span>DeepSeek Harness</span><span>RAG</span><span>本地推理</span></div>
+    </div>
+    <div class="ai-band-visual">
+      <div class="ai-chat-mock">
+        <div class="mock-msg user">llama.cpp 和 Ollama 有什么区别？</div>
+        <div class="mock-msg bot"><strong>学习助手</strong><p>llama.cpp 是底层推理引擎，Ollama 更像开箱即用的模型运行与管理层。想理解量化与参数，从 llama.cpp 入手；想快速跑模型，可以先用 Ollama。</p><span class="mock-link">→ 查看《llama.cpp 入门与编译》</span></div>
+        <div class="mock-input">继续提问… <span>↑</span></div>
       </div>
     </div>
-    <div class="container hero-marquee"><span>热门路径</span><a href="${relLink(currentPath, 'ai/llama-cpp.html')}">llama.cpp 本地推理</a><a href="${relLink(currentPath, 'avalonia/mvvm.html')}">Avalonia MVVM</a><a href="${relLink(currentPath, 'server/nginx.html')}">Nginx 反向代理</a><a href="${relLink(currentPath, 'ssh/keys.html')}">SSH 密钥登录</a><a href="${relLink(currentPath, 'ai/deepseek-harness.html')}">DeepSeek Harness</a><a href="${relLink(currentPath, 'hardware/architecture.html')}">计算机组成</a><a href="${relLink(currentPath, 'python/curriculum.html')}">Python 数据科学</a><a href="${relLink(currentPath, 'ai/curriculum.html')}">AI Agent</a><a href="${relLink(currentPath, 'database/overview.html')}">数据库选型</a><a href="${relLink(currentPath, 'foundations/variables.html')}">编程基础</a></div>
-  </section>
-
-  <section class="container section" id="tracks">
-    <div class="section-heading"><div><span class="section-kicker">LEARNING TRACKS</span><h2>选择你的学习方向</h2></div><a class="section-link" href="${relLink(currentPath, 'all-tutorials.html')}">查看全部 ${catalogCount}+ 个主题 →</a></div>
-    <div class="track-grid">${tracks}</div>
-  </section>
-
-  <section class="container section" id="paths">
-    <div class="section-heading"><div><span class="section-kicker">ROADMAPS</span><h2>${paths.length} 条可执行的学习路线</h2></div><span class="section-note">不用再纠结先学什么</span></div>
-    <div class="path-grid">${paths}</div>
-  </section>
-
-  <section class="container section featured-section">
-    <div class="section-heading"><div><span class="section-kicker">POPULAR NOW</span><h2>热门教程</h2></div><a class="section-link" href="${relLink(currentPath, 'all-tutorials.html')}">全部教程 →</a></div>
-    <div class="featured-grid"><div class="featured-list">${featureList}</div><aside class="featured-aside"><div class="mini-terminal"><div class="mini-terminal-head"><span></span><span></span><span></span></div><pre><code><span class="term-green">$</span> dotnet run
-Hello, StarLearn!
-
-<span class="term-green">$</span> llama-cli -m model.gguf
-<span class="term-dim">loaded 7B model, Q4_K_M</span>
-<span class="term-green">$</span> ssh deploy@server
-<span class="term-dim">✓ connected · deploy ready</span></code></pre></div><h3>边学边做，马上看到结果</h3><p>每篇教程都有可运行示例、练习和下一步指引。学完一个模块，就把它部署到自己的服务器。</p><a class="text-link" href="${relLink(currentPath, 'projects/local-ai-chat.html')}">看实战项目 →</a></aside></div>
-  </section>
-
-  <section class="container section ai-section">
-    <div class="ai-band">
-      <div class="ai-band-copy"><span class="section-kicker green">AI LEARNING</span><h2>不只学 AI，<br>把 AI 变成你的学习搭档</h2><p>理解 llama.cpp 的推理流程、GGUF 量化与 DeepSeek Harness 的 Agent 工作流；再用站内 AI 助手解释概念、出题和规划路线。</p><div class="hero-actions"><a class="btn btn-primary" href="${relLink(currentPath, 'ai/intro.html')}">进入 AI 学习路线 →</a><button class="btn btn-ghost js-open-ai" type="button">打开 AI 助手</button></div><div class="ai-chips"><span>llama.cpp</span><span>GGUF / Q4_K_M</span><span>DeepSeek Harness</span><span>RAG</span><span>本地推理</span></div></div>
-      <div class="ai-band-visual"><div class="ai-chat-mock"><div class="mock-msg user">llama.cpp 和 Ollama 有什么区别？</div><div class="mock-msg bot"><strong>学习助手</strong><p>llama.cpp 是底层推理引擎，Ollama 更像开箱即用的模型运行与管理层。想理解量化与参数，从 llama.cpp 入手；想快速跑模型，可以先用 Ollama。</p><span class="mock-link">→ 查看《llama.cpp 入门与编译》</span></div><div class="mock-input">继续提问… <span>↑</span></div></div></div>
+  </div>
+</section>
+<section class="container section">
+  <div class="section-heading"><div><span class="section-kicker">WHY STARLEARN</span><h2>为“真正学会”设计的站点</h2></div></div>
+  <div class="features-grid">
+    <div class="feature"><span class="feature-icon">↓</span><h3>全站 Markdown</h3><p>每篇文章、每个分类和全站合集都能下载为 .md，方便离线阅读与笔记归档。</p></div>
+    <div class="feature"><span class="feature-icon">✦</span><h3>AI 学习助手</h3><p>站内知识库免配置可用；也支持接入 DeepSeek、OpenAI、Ollama 或自建代理。</p></div>
+    <div class="feature"><span class="feature-icon">✓</span><h3>练习即时反馈</h3><p>随堂练习直接嵌在文章里，选完立刻判分并查看解析，不是只看不练。</p></div>
+    <div class="feature"><span class="feature-icon">◔</span><h3>进度与笔记</h3><p>本地记录已学章节、分类进度和个人笔记，导出后就是自己的知识库。</p></div>
+    <div class="feature"><span class="feature-icon">⌕</span><h3>全文搜索</h3><p>标题、简介、标签和正文都可搜索，按 / 即可打开，键盘操作流畅。</p></div>
+    <div class="feature"><span class="feature-icon">▣</span><h3>可直接部署</h3><p>纯静态输出，支持 GitHub Pages；同时提供 Nginx、Docker 与 AI 代理的 Linux 部署方案。</p></div>
+  </div>
+</section>
+<section class="container section catalog-preview">
+  <div class="section-heading"><div><span class="section-kicker">FULL CATALOG</span><h2>完整技术课程目录</h2></div><a class="section-link" href="${relLink(currentPath, 'all-tutorials.html')}">打开完整目录 →</a></div>
+  <div class="catalog-preview-inner">
+    <div>
+      <p>12 个技术方向、150 个主题：Python/数据科学、AI/智能开发、前端、后端、数据库、移动开发、DevOps、编程语言、计算机基础、XML/Web Service、.NET 与网站建设。核心路线本地精讲，长尾主题提供官方入口。</p>
+      <div class="catalog-tags">${localCatalog.map((i) => `<a href="${relLink(currentPath, i.local)}">${i.name}</a>`).join('')}<a href="${relLink(currentPath, 'all-tutorials.html')}">更多 →</a></div>
     </div>
-  </section>
-
-  <section class="container section">
-    <div class="section-heading"><div><span class="section-kicker">WHY STARLEARN</span><h2>为“真正学会”设计的站点</h2></div></div>
-    <div class="features-grid">
-      <div class="feature"><span class="feature-icon">↓</span><h3>全站 Markdown</h3><p>每篇文章、每个分类和全站合集都能下载为 .md，方便离线阅读与笔记归档。</p></div>
-      <div class="feature"><span class="feature-icon">✦</span><h3>AI 学习助手</h3><p>站内知识库免配置可用；也支持接入 DeepSeek、OpenAI、Ollama 或自建代理。</p></div>
-      <div class="feature"><span class="feature-icon">✓</span><h3>练习即时反馈</h3><p>随堂练习直接嵌在文章里，选完立刻判分并查看解析，不是只看不练。</p></div>
-      <div class="feature"><span class="feature-icon">◔</span><h3>进度与笔记</h3><p>本地记录已学章节、分类进度和个人笔记，导出后就是自己的知识库。</p></div>
-      <div class="feature"><span class="feature-icon">⌕</span><h3>全文搜索</h3><p>标题、简介、标签和正文都可搜索，按 / 即可打开，键盘操作流畅。</p></div>
-      <div class="feature"><span class="feature-icon">▣</span><h3>可直接部署</h3><p>纯静态输出，支持 GitHub Pages；同时提供 Nginx、Docker 与 AI 代理的 Linux 部署方案。</p></div>
-    </div>
-  </section>
-
-  <section class="container section catalog-preview">
-    <div class="section-heading"><div><span class="section-kicker">FULL CATALOG</span><h2>完整技术课程目录</h2></div><a class="section-link" href="${relLink(currentPath, 'all-tutorials.html')}">打开完整目录 →</a></div>
-    <div class="catalog-preview-inner"><div><p>12 个技术方向、150 个主题：Python/数据科学、AI/智能开发、前端、后端、数据库、移动开发、DevOps、编程语言、计算机基础、XML/Web Service、.NET 与网站建设。核心路线本地精讲，长尾主题提供官方入口。</p><div class="catalog-tags">${localCatalog.map((i) => `<a href="${relLink(currentPath, i.local)}">${i.name}</a>`).join('')}<a href="${relLink(currentPath, 'all-tutorials.html')}">更多 →</a></div></div><div class="catalog-numbers"><strong>${catalogCount}+</strong><span>个教程主题</span><strong>${categories.length}</strong><span>个教程分类</span><strong>${stats.articles}</strong><span>篇可下载文章</span></div></div>
-  </section>
-
-  <section class="container section final-cta"><div><span class="section-kicker">START TODAY</span><h2>现在就开始，把知识变成作品</h2><p>从一篇教程、一段代码、一次部署开始。所有内容永久免费，支持离线下载。</p></div><div class="hero-actions"><a class="btn btn-primary btn-lg" href="${relLink(currentPath, 'python/intro.html')}">从 Python 开始</a><a class="btn btn-ghost btn-lg" href="${relLink(currentPath, 'exercises.html')}">先做几道练习</a></div></section>`;
+    <div class="catalog-numbers"><strong>${catalogCount}+</strong><span>个教程主题</span><strong>${categories.length}</strong><span>个教程分类</span><strong>${stats.articles}</strong><span>篇可下载文章</span></div>
+  </div>
+</section>
+<section class="container section final-cta"><div><span class="section-kicker">START TODAY</span><h2>现在就开始，把知识变成作品</h2><p>从一篇教程、一段代码、一次部署开始。所有内容永久免费，支持离线下载。</p></div><div class="hero-actions"><a class="btn btn-primary btn-lg" href="${relLink(currentPath, 'python/intro.html')}">从 Python 开始</a><a class="btn btn-ghost btn-lg" href="${relLink(currentPath, 'exercises.html')}">先做几道练习</a></div></section>`;
   return layout({ title: '', description: site.description, currentPath, content, bodyClass: 'page-home' });
 }
 
@@ -787,32 +822,37 @@ Hello, StarLearn!
 // ---------------------------------------------------------------------------
 function allTutorialsPage() {
   const currentPath = 'all-tutorials.html';
-  const localSections = categories.map((c) => `
-    <section class="catalog-category" data-filter-group>
+  const localSections = categories.map((c) =>
+    `<section class="catalog-category" data-filter-group>
       <div class="catalog-category-head">${catBadge(c, currentPath)}<div><h2><a href="${relLink(currentPath, `${c.slug}/index.html`)}">${c.name}</a></h2><p>${escapeHtml(c.description)}</p></div><span class="catalog-count">${c.articles.length} 篇</span></div>
       <div class="catalog-article-grid">${c.articles.map((a) => `<a class="catalog-article" href="${relLink(currentPath, a.path)}" data-catalog-item data-search="${escapeHtml(`${a.title} ${a.description} ${a.tags.join(' ')}`)}"><span>${escapeHtml(a.title)}</span><small>${a.minutes} 分钟${a.quizCount ? ` · ${a.quizCount} 练习` : ''}</small></a>`).join('')}</div>
-    </section>`).join('');
-  const catalogGroups = catalogData.catalog.map((group) => `
-    <section class="catalog-group" data-filter-group>
+    </section>`
+  ).join('');
+  const catalogGroups = catalogData.catalog.map((group) =>
+    `<section class="catalog-group" data-filter-group>
       <div class="catalog-group-head"><span class="catalog-group-icon">${iconTag(group.icon, currentPath, 'catalog-group-icon-img', '')}</span><h2>${group.group}</h2><span>${group.items.length} 个主题</span></div>
       <div class="catalog-grid">${group.items.map((item) => {
         const href = item.local ? relLink(currentPath, item.local) : item.url;
         const external = !item.local;
-        return `<a class="catalog-item${item.local ? ' is-local' : ''}" href="${href}" ${external ? 'target="_blank" rel="noopener"' : ''} data-catalog-item data-search="${escapeHtml(`${item.name} ${item.desc}`)}"><div class="catalog-item-top"><span class="catalog-item-name">${iconTag(item.icon, currentPath, 'catalog-item-icon', '')}<strong>${escapeHtml(item.name)}</strong></span><span class="source-badge ${item.local ? 'local' : 'external'}">${item.local ? '本站精讲' : '详细文档 ↗'}</span></div><p>${escapeHtml(item.desc)}</p></a>`;
+        return `<a class="catalog-item${item.local ? ' is-local' : ''}" href="${href}" ${external ? 'target="_blank" rel="noopener"' : ''} data-catalog-item data-search="${escapeHtml(`${item.name} ${item.desc}`)}">
+          <div class="catalog-item-top"><span class="catalog-item-name">${iconTag(item.icon, currentPath, 'catalog-item-icon', '')}<strong>${escapeHtml(item.name)}</strong></span><span class="source-badge ${item.local ? 'local' : 'external'}">${item.local ? '本站精讲' : '详细文档 ↗'}</span></div>
+          <p>${escapeHtml(item.desc)}</p>
+        </a>`;
       }).join('')}</div>
-    </section>`).join('');
+    </section>`
+  ).join('');
   const content = `<div class="container directory-page">
-    <header class="directory-hero"><span class="section-kicker">ALL TUTORIALS</span><h1>全部教程</h1><p>${categories.length} 个教程分类、${articles.length} 篇可下载文章、${catalogCount} 个课程主题。按 Python、AI、前端、后端、数据库、移动、DevOps、计算机基础等方向浏览，也可以用搜索和筛选快速定位。</p>
-      <div class="directory-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><input id="catalogFilter" placeholder="筛选教程主题，例如 Avalonia、Docker、SQL…" autocomplete="off"></div>
-      <div class="directory-actions"><a class="btn btn-primary btn-sm" href="${relLink(currentPath, 'md/all.md')}" download>↓ 下载全站 Markdown</a><a class="btn btn-ghost btn-sm" href="${relLink(currentPath, 'exercises.html')}">去练习 →</a></div>
-    </header>
-    <div class="catalog-section-head"><div><span class="section-kicker">STARLEARN TRACKS</span><h2>本站精讲课程</h2></div><span class="section-note">完整正文、代码示例、练习与 .md 下载</span></div>
-    <div class="local-catalog">${localSections}</div>
-    <div class="catalog-section-head catalog-heading"><div><span class="section-kicker">STARLEARN CURRICULUM</span><h2>完整技术课程目录</h2></div><span class="section-note">150 个主题 · 12 个方向 · 核心路线本地精讲</span></div>
-    <div class="callout callout-note"><div class="callout-title">关于目录</div><p>本目录按 Python/数据科学、AI/智能开发、前端、后端、数据库、移动开发、DevOps、编程语言、计算机基础、XML/Web Service、.NET 与网站建设 12 个方向整理，共 150 个主题。标记“本站精讲”的主题拥有原创中文教程、练习和 Markdown 下载；标记“详细文档”的主题会打开对应技术的官方文档，便于继续查阅完整语法与 API。</p></div>
-    <div class="catalog-groups">${catalogGroups}</div>
-    <div class="directory-empty" id="catalogEmpty" hidden>没有匹配的教程，换个关键词试试。</div>
-  </div>`;
+  <header class="directory-hero"><span class="section-kicker">ALL TUTORIALS</span><h1>全部教程</h1><p>${categories.length} 个教程分类、${articles.length} 篇可下载文章、${catalogCount} 个课程主题。按 Python、AI、前端、后端、数据库、移动、DevOps、计算机基础等方向浏览，也可以用搜索和筛选快速定位。</p>
+    <div class="directory-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><input id="catalogFilter" placeholder="筛选教程主题，例如 Avalonia、Docker、SQL…" autocomplete="off"></div>
+    <div class="directory-actions"><a class="btn btn-primary btn-sm" href="${relLink(currentPath, 'md/all.md')}" download>↓ 下载全站 Markdown</a><a class="btn btn-ghost btn-sm" href="${relLink(currentPath, 'exercises.html')}">去练习 →</a></div>
+  </header>
+  <div class="catalog-section-head"><div><span class="section-kicker">STARLEARN TRACKS</span><h2>本站精讲课程</h2></div><span class="section-note">完整正文、代码示例、练习与 .md 下载</span></div>
+  <div class="local-catalog">${localSections}</div>
+  <div class="catalog-section-head catalog-heading"><div><span class="section-kicker">STARLEARN CURRICULUM</span><h2>完整技术课程目录</h2></div><span class="section-note">150 个主题 · 12 个方向 · 核心路线本地精讲</span></div>
+  <div class="callout callout-note"><div class="callout-title">关于目录</div><p>本目录按 Python/数据科学、AI/智能开发、前端、后端、数据库、移动开发、DevOps、编程语言、计算机基础、XML/Web Service、.NET 与网站建设 12 个方向整理，共 150 个主题。标记“本站精讲”的主题拥有原创中文教程、练习和 Markdown 下载；标记“详细文档”的主题会打开对应技术的官方文档，便于继续查阅完整语法与 API。</p></div>
+  <div class="catalog-groups">${catalogGroups}</div>
+  <div class="directory-empty" id="catalogEmpty" hidden>没有匹配的教程，换个关键词试试。</div>
+</div>`;
   return layout({ title: '全部教程', description: 'StarLearn 全部教程目录，覆盖 Python/数据科学、AI、前端、后端、数据库、移动开发、DevOps、编程语言、计算机基础、XML、.NET 与网站建设共 150 个主题。', currentPath, content, bodyClass: 'page-directory' });
 }
 
@@ -829,11 +869,13 @@ function exercisesPage() {
     return `<a class="practice-row" href="${relLink(currentPath, a.path)}" data-progress-key="${a.path}">${catBadge(cat, currentPath)}<span><strong>${escapeHtml(a.title)}</strong><small>${escapeHtml(a.description)}</small></span><span class="practice-count">${a.quizCount} 题</span><span class="lesson-row-check">✓</span><span class="lesson-row-arrow">→</span></a>`;
   }).join('');
   const content = `<div class="container exercises-page">
-    <header class="directory-hero"><span class="section-kicker">PRACTICE LAB</span><h1>练习与测验</h1><p>学习不是看懂，而是能独立写出来。先做一轮综合测验，再进入各路线练习课。所有题目都在浏览器内即时判分。</p><div class="hero-stats"><div><strong>${articles.reduce((s, a) => s + a.quizCount, 0)}</strong><span>随堂练习</span></div><div><strong>${practiceArticles.length}</strong><span>练习课</span></div><div><strong>${globalQuizzes.length}</strong><span>综合题</span></div></div></header>
-    <section class="exercise-section"><div class="section-heading"><div><span class="section-kicker">WARM UP</span><h2>综合热身测验</h2></div><span class="section-note">覆盖编程基础、C#、Python、Linux、AI、前端与部署</span></div><div class="quiz-stack">${quizHtml}</div></section>
-    <section class="exercise-section"><div class="section-heading"><div><span class="section-kicker">TRACK PRACTICE</span><h2>各路线练习课</h2></div><span class="section-note">建议学完对应模块后完成</span></div><div class="practice-list">${practiceList}</div></section>
-    <div class="inline-cta"><div><strong>想要更多练习？</strong><p>每篇文章末尾都有随堂练习；也可以用 AI 助手根据当前页面即时出题。</p></div><button class="btn btn-primary btn-sm js-open-ai" type="button">让 AI 出题 →</button></div>
-  </div>`;
+  <header class="directory-hero"><span class="section-kicker">PRACTICE LAB</span><h1>练习与测验</h1><p>学习不是看懂，而是能独立写出来。先做一轮综合测验，再进入各路线练习课。所有题目都在浏览器内即时判分。</p>
+    <div class="hero-stats"><div><strong>${articles.reduce((s, a) => s + a.quizCount, 0)}</strong><span>随堂练习</span></div><div><strong>${practiceArticles.length}</strong><span>练习课</span></div><div><strong>${globalQuizzes.length}</strong><span>综合题</span></div></div>
+  </header>
+  <section class="exercise-section"><div class="section-heading"><div><span class="section-kicker">WARM UP</span><h2>综合热身测验</h2></div><span class="section-note">覆盖编程基础、C#、Python、Linux、AI、前端与部署</span></div><div class="quiz-stack">${quizHtml}</div></section>
+  <section class="exercise-section"><div class="section-heading"><div><span class="section-kicker">TRACK PRACTICE</span><h2>各路线练习课</h2></div><span class="section-note">建议学完对应模块后完成</span></div><div class="practice-list">${practiceList}</div></section>
+  <div class="inline-cta"><div><strong>想要更多练习？</strong><p>每篇文章末尾都有随堂练习；也可以用 AI 助手根据当前页面即时出题。</p></div><button class="btn btn-primary btn-sm js-open-ai" type="button">让 AI 出题 →</button></div>
+</div>`;
   return layout({ title: '练习与测验', description: 'StarLearn练习中心：交互式综合测验与各技术路线练习课，即时判分并查看解析。', currentPath, content, bodyClass: 'page-exercises' });
 }
 
@@ -965,7 +1007,6 @@ function build() {
   writePage('all-tutorials.html', allTutorialsPage());
   writePage('exercises.html', exercisesPage());
   writePage('404.html', notFoundPage());
-
   for (const category of categories) {
     writePage(`${category.slug}/index.html`, categoryPage(category));
     for (const article of category.articles) {
@@ -977,7 +1018,7 @@ function build() {
       title: page.title,
       description: page.description,
       currentPath: page.path,
-      content: `<div class="container standalone-page"><nav class="breadcrumb"><a href="${relLink(page.path, 'index.html')}">首页</a><span>/</span><span>${escapeHtml(page.title)}</span></nav><article class="article-card"><header class="article-header"><div class="article-eyebrow"><span class="badge badge-green">${escapeHtml(page.layout === 'about' ? '关于本站' : '页面')}</span></div><h1>${escapeHtml(page.title)}</h1><p class="article-lead">${escapeHtml(page.description)}</p><div class="article-meta"><span>更新于 ${formatDate(page.updated)}</span><span class="dot"></span><span>约 ${page.minutes} 分钟</span></div></header><div class="article-body">${page.html}</div><footer class="article-footer"><div class="article-tags">${(page.tags || []).map((t) => `<span class="tag"># ${escapeHtml(t)}</span>`).join('')}</div><div class="article-actions"><a class="btn btn-ghost btn-sm" href="${relLink(page.path, `md/pages/${page.slug}.md`)}" download>下载本页 .md</a></div></footer></article></div>`,
+      content: `<div class="container standalone-page"><nav class="breadcrumb"><a href="${relLink(page.path, 'index.html')}">首页</a><span>/</span><span>${escapeHtml(page.title)}</span></nav><article class="article-card"><header class="article-header"><div class="article-eyebrow"><span class="badge badge-green">${escapeHtml(page.layout === 'about' ? '关于本站' : '页面')}</span></div><h1>${escapeHtml(page.title)}</h1><p class="article-lead">${escapeHtml(page.description)}</p><div class="article-meta"><span>更新于 ${formatDate(page.updated)}</span><span class="dot"></span><span>约 ${page.minutes} 分钟</span></div></header><div class="article-body">${page.html}</div><footer class="article-footer"><div class="article-tags">${(page.tags || []).map((t) => `<span class="tag">#${escapeHtml(t)}</span>`).join('')}</div><div class="article-actions"><a class="btn btn-ghost btn-sm" href="${relLink(page.path, `md/pages/${page.slug}.md`)}" download>下载本页 .md</a></div></footer></article></div>`,
       bodyClass: 'page-standalone',
       article: page,
     }));
@@ -1019,7 +1060,7 @@ function build() {
 
   const urls = ['index.html', 'all-tutorials.html', 'exercises.html', 'about.html', ...categories.map((c) => `${c.slug}/index.html`), ...articles.map((a) => a.path)];
   if (SITE_URL) {
-    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[...new Set(urls)].map((u) => `  <url><loc>${SITE_URL}/${u}</loc><lastmod>${BUILD_DATE}</lastmod></url>`).join('\n')}\n</urlset>\n`;
+    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[...new Set(urls)].map((u) => `<url><loc>${SITE_URL}/${u}</loc><lastmod>${BUILD_DATE}</lastmod></url>`).join('\n')}\n</urlset>\n`;
     writeFile('sitemap.xml', sitemap);
   }
 
@@ -1030,9 +1071,9 @@ function build() {
   const totalQuizzes = articles.reduce((s, a) => s + a.quizCount, 0);
   const totalChars = articles.reduce((s, a) => s + a.chars, 0);
   console.log(`✓ Build complete: ${articles.length} articles, ${categories.length} tracks, ${standalonePages.length} pages, ${totalQuizzes} quizzes, ${totalChars.toLocaleString()} chars.`);
-  console.log(`  Output: ${DIST}`);
+  console.log(`Output: ${DIST}`);
   const iconTotal = fs.readdirSync(path.join(DIST, 'static/img/icons')).length;
-  console.log(`  Icons: ${iconTotal} local open-license SVGs (Simple Icons CC0, Lucide ISC)`);
+  console.log(`Icons: ${iconTotal} local open-license SVGs (Simple Icons CC0, Lucide ISC)`);
 }
 
 function chmodTree(dir) {
